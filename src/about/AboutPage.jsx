@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Common.css';
-import './HomePage.css';
+import './AboutPage.css'
 
-function HomePage() {
+function AboutPage() {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
   
@@ -50,8 +50,8 @@ function HomePage() {
       {/* Navigation */}
       <nav className="main-nav">
         <ul>
-          <li><a href="#" onClick={() => handleNavClick('/')} className="active">Trang chủ</a></li>
-          <li><a href="#" onClick={() => handleNavClick('/about')}>Giới thiệu</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/')}>Trang chủ</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/about')} className="active">Giới thiệu</a></li>
           <li><a href="#" onClick={() => handleNavClick('/products')}>Sản phẩm</a></li>
           <li><a href="#" onClick={() => handleNavClick('/workshop')}>Workshop</a></li>
           <li><a href="#" onClick={() => handleNavClick('/media')}>Media</a></li>
@@ -61,44 +61,65 @@ function HomePage() {
 
       {/* Main Content */}
       <main className="main-content">
-        {/* Featured Products Section */}
-        <section className="product-section">
-          <h2>Các mẫu bán chạy</h2>
-          <div className="product-grid">
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Colorful ceramic plates" />
-            </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Milk cups and saucers" />
-            </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Cute bear mug" />
-            </div>
+        {/* About Header */}
+        <section className="about-header">
+          <h1>Giới thiệu Craftique</h1>
+        </section>
+
+        {/* About Content */}
+        <section className="about-content">
+          <div className="about-text">
+            <p>
+              <strong>Craftique</strong> là một trang web chuyên cung cấp sản phẩm gốm sứ độc đáo, bao gồm chén, đĩa, ly và gốm sứ secondhand Nhật Bản. Chúng tôi cam kết cung cấp những sản phẩm độc đáo và thủ tự nhiều, đánh biến sắt phải của của và bền vững cho người tiêu dùng.
+            </p>
+            
+            <p>
+              Ngoài việc bán sản phẩm gốm sứ, chúng tôi còn tổ chức các buổi <strong>Workshop</strong> học làm việc các nghề thủ côn của những yêu thích kể, cho phép khách hàng tương tác và tận hưởng theo ý kiến. Craftique hướng dẫn đủ hướng hoa trẻ, đức biết là thể tìm Gen Z, những người yêu thích sử sáng tạo và cá tính.
+            </p>
+            
+            <p>
+              Ngoài ra, thông qua trang web, chúng tôi cũng cung cấp dể lý do thiết kể thành ảnh dẫn liên sản phẩm. Hơ có thể chọn mẫu sắc, hình dáng và màu sắc theo ý của cho để tạo ra những sản phẩm độc đáo và mang tính cá nhân.
+            </p>
+            
+            <p>
+              Đặc biệt, chúng tôi cũng cung cấp những gốm sứ secondhand từ Nhật Bản, mang đến sự đa dạng và phong phú cho bộ sưu tập, cho phép khách hàng khám phá những nét văn hóa độc đáo của đất nước Nhật Bản.
+            </p>
+            
+            <p>
+              Về cảm kết về chất lượng và bảo vệ, Craftique không chỉ mang đến những món đồ gốm tinh tế mà còn góp phần vào việc bảo vệ môi trường. Hãy cùng chúng tôi khám phá thế giới gốm sứ đầy sáng tạo nhé!
+            </p>
           </div>
         </section>
 
-        {/* Custom Ceramics Section */}
-        <section className="product-section">
-          <h2>Ly sứ in hình theo yêu cầu</h2>
-          <div className="product-grid">
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Custom printed mugs" />
+        {/* Product Gallery */}
+        <section className="product-gallery">
+          <div className="gallery-grid">
+            <div className="gallery-item">
+              <img 
+                src="https://via.placeholder.com/300x300?text=Heart+Pattern+Ceramics" 
+                alt="Heart pattern ceramic collection"
+              />
             </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Photo printed mugs" />
+            
+            <div className="gallery-item">
+              <img 
+                src="https://via.placeholder.com/300x300?text=Colorful+Bowl+Collection" 
+                alt="Colorful ceramic bowls"
+              />
             </div>
-          </div>
-        </section>
-
-        {/* Japanese Secondhand Ceramics */}
-        <section className="product-section">
-          <h2>Gốm secondhand Nhật Bản</h2>
-          <div className="product-grid">
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Japanese ceramics collection" />
+            
+            <div className="gallery-item">
+              <img 
+                src="https://via.placeholder.com/300x300?text=Pineapple+Teapot+Set" 
+                alt="Pineapple shaped teapot and cups"
+              />
             </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x300" alt="Vintage Japanese pottery" />
+            
+            <div className="gallery-item">
+              <img 
+                src="https://via.placeholder.com/300x300?text=Geometric+Mugs" 
+                alt="Geometric design mugs"
+              />
             </div>
           </div>
         </section>
@@ -149,4 +170,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default AboutPage;

@@ -1,0 +1,164 @@
+.about-header {
+  background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc6 100%);
+  padding: 60px 0;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.about-header h1 {
+  font-size: 2.5rem;
+  color: #8B4513;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.about-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  margin-bottom: 80px;
+}
+
+.about-text {
+  background: #fff;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  line-height: 1.8;
+  margin-bottom: 60px;
+}
+
+.about-text p {
+  margin-bottom: 20px;
+  color: #444;
+  font-size: 1.1rem;
+  text-align: justify;
+}
+
+.about-text p:last-child {
+  margin-bottom: 0;
+}
+
+.about-text strong {
+  color: #8B4513;
+  font-weight: 600;
+}
+
+.product-gallery {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  margin-bottom: 60px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+/* Additional gallery section for more products */
+.extended-gallery {
+  margin-top: 40px;
+}
+
+.extended-gallery .gallery-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.extended-gallery .gallery-item {
+  height: 250px;
+}
+
+.extended-gallery .gallery-item img {
+  height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-header {
+    padding: 40px 0;
+    margin-bottom: 40px;
+  }
+  
+  .about-header h1 {
+    font-size: 2rem;
+  }
+  
+  .about-content {
+    margin-bottom: 50px;
+  }
+  
+  .about-text {
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+  
+  .about-text p {
+    font-size: 1rem;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .gallery-item {
+    height: 250px;
+  }
+  
+  .gallery-item img {
+    height: 250px;
+  }
+  
+  .extended-gallery .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-header {
+    padding: 30px 0;
+  }
+  
+  .about-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .about-text {
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .gallery-item {
+    border-radius: 10px;
+  }
+}

@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import HomePage from './homepage/HomePage.jsx';
 import LoginPage from './login/LoginPage.jsx';
+import AboutPage from './about/AboutPage';
+import WorkshopPage from './workshop/WorkshopPage.jsx';
 
 function App() {
 
@@ -13,7 +15,8 @@ function App() {
         
         {/* Login route */}
         <Route path="/login" element={<LoginPage />} />
-        
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/workshop" element={<WorkshopPage />} />
       </Routes>
     </Router>
   );
