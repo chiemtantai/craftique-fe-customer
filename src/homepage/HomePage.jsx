@@ -30,9 +30,9 @@ function HomePage() {
       {/* Header */}
       <header className="header">
         <div className="contact-info">
-          <span>0987654321</span>
-          <span>0123456789</span>
-          <span>Craftique2023@gmail.com</span>
+          <span>📞0987654321</span>
+          <span>📞0123456789</span>
+          <span>📧Craftique2023@gmail.com</span>
         </div>
         <div className="logo-container">
           <h1 onClick={() => handleNavClick('/')}>Craftique</h1>
@@ -40,7 +40,6 @@ function HomePage() {
         <div className="search-cart">
           <div className="search-box">
             <input type="text" placeholder="Tìm kiếm" />
-            <button><i className="search-icon">🔍</i></button>
           </div>
           <button className="cart-button"><i className="cart-icon">🛒</i></button>
           <button className="login-nav-button" onClick={handleLoginClick}>Đăng nhập</button>
@@ -50,7 +49,7 @@ function HomePage() {
       {/* Navigation */}
       <nav className="main-nav">
         <ul>
-          <li><a href="#" onClick={() => handleNavClick('/')} className="active">Trang chủ</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/home')} className="active">Trang chủ</a></li>
           <li><a href="#" onClick={() => handleNavClick('/about')}>Giới thiệu</a></li>
           <li><a href="#" onClick={() => handleNavClick('/products')}>Sản phẩm</a></li>
           <li><a href="#" onClick={() => handleNavClick('/workshop')}>Workshop</a></li>
@@ -108,9 +107,9 @@ function HomePage() {
       <footer className="footer">
         <div className="footer-column">
           <h3>Gốm sứ Craftique</h3>
-          <p>0987654321</p>
-          <p>0123456789</p>
-          <p>Craftique2023@gmail.com</p>
+          <p>📞0987654321</p>
+          <p>📞0123456789</p>
+          <p>📧Craftique2023@gmail.com</p>
         </div>
         
         <div className="footer-column">

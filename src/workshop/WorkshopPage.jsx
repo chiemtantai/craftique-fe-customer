@@ -1,42 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './WorkshopPage.css';
 
 const WorkshopPage = () => {
+  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Email submitted:', email);
+    setEmail('');
+  };
+  
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleNavClick = (path) => {
+    navigate(path);
+  };
+
   return (
     <div className="container">
       {/* Header */}
-      <div className="header">
+      <header className="header">
         <div className="contact-info">
-          <span>0935736298</span>
-          <span>0783697755</span>
-          <span>Craftique0201@gmail.com.vn</span>
+          <span>📞0987654321</span>
+          <span>📞0123456789</span>
+          <span>📧Craftique2023@gmail.com</span>
         </div>
         <div className="logo-container">
-          <h1>Craftique</h1>
+          <h1 onClick={() => handleNavClick('/')}>Craftique</h1>
         </div>
         <div className="search-cart">
           <div className="search-box">
             <input type="text" placeholder="Tìm kiếm" />
-            <button>🔍</button>
           </div>
-          <button className="cart-button">Giỏ hàng</button>
+          <button className="cart-button"><i className="cart-icon">🛒</i></button>
+          <button className="login-nav-button" onClick={handleLoginClick}>Đăng nhập</button>
         </div>
-      </div>
+      </header>
 
       {/* Navigation */}
       <nav className="main-nav">
         <ul>
-          <li><a href="/">Trang chủ</a></li>
-          <li><a href="/about">Giới thiệu</a></li>
-          <li><a href="/products">Sản phẩm</a></li>
-          <li><a href="/workshop" className="active">Workshop</a></li>
-          <li><a href="/media">Media</a></li>
-          <li><a href="/stories">Chuyện của gốm</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/home')}>Trang chủ</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/about')}>Giới thiệu</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/products')}>Sản phẩm</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/workshop')} className="active">Workshop</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/media')}>Media</a></li>
+          <li><a href="#" onClick={() => handleNavClick('/blog')}>Chuyện của gốm</a></li>
         </ul>
       </nav>
 
       {/* Main Content */}
-      <div className="main-content">
+      <main className="main-content">
         <div className="workshop-container">
           <div className="workshop-content">
             <h1 className="workshop-title">Hướng dẫn đăng ký</h1>
@@ -94,37 +116,47 @@ const WorkshopPage = () => {
             </button>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Footer */}
       <footer className="footer">
         <div className="footer-column">
           <h3>Gốm sứ Craftique</h3>
-          <p>0935736298</p>
-          <p>0783697755</p>
-          <p>Craftique0201@gmail.com.vn</p>
+          <p>📞0987654321</p>
+          <p>📞0123456789</p>
+          <p>📧Craftique2023@gmail.com</p>
         </div>
+        
         <div className="footer-column">
           <h3>Hỗ trợ</h3>
           <ul>
             <li>Điều khoản giao dịch chung</li>
-            <li>Chính sách bảo hành và thông tin hoàn trả</li>
-            <li>Chính sách đổi hàng và giao nhận</li>
-            <li>Chính sách kiểm hàng</li>
+            <li>Chính sách mua hàng và thanh toán</li>
+            <li>Chính sách vận chuyển và giao nhận</li>
             <li>Chính sách đổi trả và hoàn tiền</li>
-            <li>Chính sách báo về thông tin khách hàng</li>
+            <li>Chính sách bảo mật thông tin</li>
             <li>Chính sách xử lý khiếu nại</li>
           </ul>
         </div>
+        
         <div className="footer-column">
           <h3>Đăng ký nhận thông tin</h3>
-          <p>Để nhận được những tin mới nhất về Craftique</p>
-          <div className="newsletter-form">
-            <input type="email" placeholder="Nhập email của bạn" />
+          <form onSubmit={handleSubmit} className="newsletter-form">
+            <input 
+              type="email" 
+              placeholder="Nhập email của bạn" 
+              value={email}
+              onChange={handleEmailChange}
+              required
+            />
             <div className="form-buttons">
-              <button className="register-btn">Đăng ký</button>
+              <button type="submit" className="register-btn">Đăng ký</button>
+              <div className="login-buttons">
+                <button type="button" className="login-btn" onClick={handleLoginClick}>Đăng nhập</button>
+                <button type="button" className="signup-btn">Đăng ký</button>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
       </footer>
     </div>
