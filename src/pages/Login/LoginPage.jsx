@@ -1,26 +1,57 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import accountService from '../../services/accountService';
 import './LoginPage.css';
 // import logoImage from './assets/craftique-logo.png'; 
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    // Xóa error khi user bắt đầu nhập lại
+    if (error) setError('');
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    // Xóa error khi user bắt đầu nhập lại
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt with:', { email, password });
-    // Here you would typically handle authentication
-    // For now, we'll just log the attempt
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await accountService.login(email, password);
+      
+      if (result.success) {
+        // Đăng nhập thành công
+        console.log('Login successful:', result.data);
+        
+        // Hiển thị thông báo thành công (tùy chọn)
+        alert(result.message);
+        
+        // Redirect đến trang chính hoặc dashboard
+        navigate('/home'); // Thay đổi route theo ý muốn
+      } else {
+        // Đăng nhập thất bại
+        setError(result.message);
+        console.error('Login failed:', result.error);
+      }
+    } catch (error) {
+      // Xử lý lỗi không mong muốn
+      console.error('Unexpected error:', error);
+      setError('Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackToHome = () => {
@@ -37,6 +68,12 @@ function LoginPage() {
         
         <h2 className="login-title">Đăng Nhập</h2>
         
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <input
@@ -46,6 +83,7 @@ function LoginPage() {
               onChange={handleEmailChange}
               required
               className="login-input"
+              disabled={isLoading}
             />
           </div>
           
@@ -57,10 +95,17 @@ function LoginPage() {
               onChange={handlePasswordChange}
               required
               className="login-input"
+              disabled={isLoading}
             />
           </div>
           
-          <button type="submit" className="login-button">Đăng Nhập</button>
+          <button 
+            type="submit" 
+            className={`login-button ${isLoading ? 'loading' : ''}`}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+          </button>
           
           <div className="forgot-password">
             <a href="/forgot-password">Quên mật khẩu?</a>

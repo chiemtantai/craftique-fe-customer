@@ -1,11 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import accountService from '../services/accountService'; // Import API service
 import './Layout.css';
 
 function Layout({ children }) {
   const [email, setEmail] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Kiểm tra trạng thái đăng nhập khi component mount
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  // Kiểm tra lại auth status khi location thay đổi (sau khi login thành công)
+  useEffect(() => {
+    checkAuthStatus();
+  }, [location.pathname]);
+
+  const checkAuthStatus = () => {
+    try {
+      const isAuth = accountService.isAuthenticated();
+      const currentUser = accountService.getCurrentUser();
+      
+      setIsLoggedIn(isAuth);
+      
+      if (isAuth && currentUser) {
+        // Ưu tiên hiển thị name, sau đó fullName, cuối cùng là email
+        const displayName = currentUser.name || 
+                           currentUser.fullName || 
+                           currentUser.displayName ||
+                           currentUser.email || 
+                           'User';
+        setUserName(displayName);
+        console.log('User đã đăng nhập:', displayName);
+      } else {
+        setUserName('');
+      }
+    } catch (error) {
+      console.error('Lỗi khi kiểm tra trạng thái đăng nhập:', error);
+      setIsLoggedIn(false);
+      setUserName('');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -21,6 +63,25 @@ function Layout({ children }) {
     navigate('/login');
   };
 
+  const handleLogout = async () => {
+    try {
+      const result = accountService.logout();
+      if (result.success) {
+        setIsLoggedIn(false);
+        setUserName('');
+        console.log(result.message);
+        
+        // Điều hướng về trang login
+        navigate('/login');
+        
+        // Có thể thêm thông báo thành công
+        // toast.success('Đăng xuất thành công');
+      }
+    } catch (error) {
+      console.error('Lỗi khi đăng xuất:', error);
+    }
+  };
+
   const handleNavClick = (path) => {
     navigate(path);
   };
@@ -28,6 +89,12 @@ function Layout({ children }) {
   // Hàm kiểm tra active nav
   const isActiveNav = (path) => {
     return location.pathname === path;
+  };
+
+  // Hàm để cắt ngắn tên user nếu quá dài
+  const getDisplayUserName = (name) => {
+    if (!name) return 'User';
+    return name.length > 20 ? name.substring(0, 20) + '...' : name;
   };
 
   return (
@@ -47,7 +114,26 @@ function Layout({ children }) {
             <input type="text" placeholder="Tìm kiếm" />
           </div>
           <button className="cart-button"><i className="cart-icon">🛒</i></button>
-          <button className="login-nav-button" onClick={handleLoginClick}>Đăng nhập</button>
+          
+          {/* Hiển thị khác nhau dựa trên trạng thái đăng nhập */}
+          {isLoading ? (
+            <div className="loading-section">
+              <span>Đang tải...</span>
+            </div>
+          ) : isLoggedIn ? (
+            <div className="user-section">
+              <span className="username" title={userName}>
+                {getDisplayUserName(userName)}
+              </span>
+              <button className="logout-button" onClick={handleLogout}>
+                Đăng xuất
+              </button>
+            </div>
+          ) : (
+            <button className="login-nav-button" onClick={handleLoginClick}>
+              Đăng nhập
+            </button>
+          )}
         </div>
       </header>
 
@@ -88,15 +174,6 @@ function Layout({ children }) {
               className={isActiveNav('/workshop') ? 'active' : ''}
             >
               Workshop
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              onClick={() => handleNavClick('/media')}
-              className={isActiveNav('/media') ? 'active' : ''}
-            >
-              Media
             </a>
           </li>
           <li>
@@ -150,8 +227,22 @@ function Layout({ children }) {
             <div className="form-buttons">
               <button type="submit" className="register-btn">Đăng ký</button>
               <div className="login-buttons">
-                <button type="button" className="login-btn" onClick={handleLoginClick}>Đăng nhập</button>
-                <button type="button" className="signup-btn">Đăng ký</button>
+                {isLoggedIn ? (
+                  <button 
+                    type="button" 
+                    className="logout-footer-btn" 
+                    onClick={handleLogout}
+                  >
+                    Đăng xuất
+                  </button>
+                ) : (
+                  <>
+                    <button type="button" className="login-btn" onClick={handleLoginClick}>
+                      Đăng nhập
+                    </button>
+                    <button type="button" className="signup-btn">Đăng ký</button>
+                  </>
+                )}
               </div>
             </div>
           </form>
