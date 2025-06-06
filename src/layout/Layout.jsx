@@ -8,18 +8,38 @@ function Layout({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [cartItemCount, setCartItemCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
   // Kiểm tra trạng thái đăng nhập khi component mount
   useEffect(() => {
     checkAuthStatus();
+    loadCartItemCount();
   }, []);
 
   // Kiểm tra lại auth status khi location thay đổi (sau khi login thành công)
   useEffect(() => {
     checkAuthStatus();
+    loadCartItemCount();
   }, [location.pathname]);
+
+  // Load cart item count from localStorage
+  const loadCartItemCount = () => {
+    try {
+      const savedCart = localStorage.getItem('cartItems');
+      if (savedCart) {
+        const cartItems = JSON.parse(savedCart);
+        const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        setCartItemCount(totalCount);
+      } else {
+        setCartItemCount(0);
+      }
+    } catch (error) {
+      console.error('Error loading cart count:', error);
+      setCartItemCount(0);
+    }
+  };
 
   const checkAuthStatus = () => {
     try {
@@ -61,6 +81,10 @@ function Layout({ children }) {
   
   const handleLoginClick = () => {
     navigate('/login');
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
   };
 
   const handleLogout = async () => {
@@ -110,10 +134,12 @@ function Layout({ children }) {
           <h1 onClick={() => handleNavClick('/')}>Craftique</h1>
         </div>
         <div className="search-cart">
-          <div className="search-box">
-            <input type="text" placeholder="Tìm kiếm" />
-          </div>
-          <button className="cart-button"><i className="cart-icon">🛒</i></button>
+          <button className="cart-button" onClick={handleCartClick}>
+            <i className="cart-icon">🛒</i>
+            {cartItemCount > 0 && (
+              <span className="cart-badge">{cartItemCount}</span>
+            )}
+          </button>
           
           {/* Hiển thị khác nhau dựa trên trạng thái đăng nhập */}
           {isLoading ? (

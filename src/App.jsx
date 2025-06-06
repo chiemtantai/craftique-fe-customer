@@ -7,6 +7,7 @@ import AboutPage from './pages/About/AboutPage.jsx';
 import WorkshopPage from './pages/Workshop/WorkshopPage.jsx';
 import ProductPage from './pages/Product/ProductPage.jsx';
 import BlogPage from './pages/Blog/BlogPage.jsx';
+import CartPage from './pages/Cart/CartPage.jsx';
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         <Route path="/workshop" element={<Layout><WorkshopPage /></Layout>} />
         <Route path="/products" element={<Layout><ProductPage /></Layout>} />
         <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
-        
+        <Route path="/cart" element={<Layout><CartPage /></Layout>} />
+
         {/* Default route */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
       </Routes>

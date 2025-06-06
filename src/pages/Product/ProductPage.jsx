@@ -16,8 +16,8 @@ const ProductPage = () => {
     above200k: false
   });
   const [sortBy, setSortBy] = useState('default');
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
-  // Fetch categories và products khi component mount
   useEffect(() => {
     fetchCategoriesAndProducts();
   }, []);
@@ -27,24 +27,19 @@ const ProductPage = () => {
     setError(null);
     
     try {
-      // Fetch categories và products đồng thời
       const [categoriesResult, productsResult] = await Promise.all([
         categoryService.getAllCategories(),
         productService.getAllProductItems()
       ]);
 
-      // Xử lý categories
       if (categoriesResult.success && categoriesResult.data) {
         setCategories(categoriesResult.data);
       } else {
-        console.warn('Lỗi khi lấy categories:', categoriesResult.message);
         setCategories([]);
       }
 
-      // Xử lý products
       if (productsResult.success && productsResult.data.items) {
         const mappedProducts = productsResult.data.items.map(item => {
-          // Tìm category name từ danh sách categories đã fetch
           const categoryId = item.product?.categoryID || item.categoryID;
           const category = categoriesResult.success && categoriesResult.data 
             ? categoriesResult.data.find(cat => cat.categoryID === categoryId)
@@ -60,12 +55,10 @@ const ProductPage = () => {
             image: item.productImages?.[0]?.imageUrl || '/api/placeholder/200/200',
             description: item.description || item.product?.description || 'Sản phẩm chất lượng cao',
             quantity: item.quantity || 0,
-            displayIndex: item.displayIndex || 0,
             isDeleted: item.isDeleted || false
           };
         });
         
-        // Lọc bỏ sản phẩm đã bị xóa
         const activeProducts = mappedProducts.filter(product => !product.isDeleted);
         setProducts(activeProducts);
       } else {
@@ -74,14 +67,65 @@ const ProductPage = () => {
       }
     } catch (error) {
       console.error('Lỗi khi lấy sản phẩm:', error);
-      setCategories([]);
-      setProducts([]);
+      setError('Không thể tải sản phẩm. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Tạo danh sách categories với count
+  const addToCart = (product) => {
+    try {
+      if (product.quantity <= 0) {
+        alert('Sản phẩm hiện tại đã hết hàng!');
+        return;
+      }
+
+      const existingCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
+      
+      if (existingItemIndex !== -1) {
+        const currentQuantityInCart = existingCart[existingItemIndex].quantity;
+        
+        if (currentQuantityInCart >= product.quantity) {
+          alert(`Không thể thêm thêm sản phẩm này. Kho chỉ còn ${product.quantity} sản phẩm!`);
+          return;
+        }
+        
+        existingCart[existingItemIndex].quantity += 1;
+      } else {
+        const cartItem = {
+          id: product.id,
+          name: product.name,
+          categoryId: product.categoryId,
+          categoryName: product.categoryName,
+          price: product.price,
+          image: product.image,
+          description: product.description,
+          quantity: 1,
+          maxQuantity: product.quantity
+        };
+        
+        existingCart.push(cartItem);
+      }
+      
+      localStorage.setItem('cartItems', JSON.stringify(existingCart));
+      alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
+      window.dispatchEvent(new Event('cartUpdated'));
+      
+    } catch (error) {
+      console.error('Lỗi khi thêm vào giỏ hàng:', error);
+      alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+    }
+  };
+
+  const handleQuickView = (product) => {
+    setQuickViewProduct(product);
+  };
+
+  const closeQuickView = () => {
+    setQuickViewProduct(null);
+  };
+
   const getCategoriesWithCount = () => {
     const allCount = products.length;
     const categoriesWithCount = [
@@ -102,16 +146,13 @@ const ProductPage = () => {
     return categoriesWithCount;
   };
 
-  // Filter products theo các điều kiện
   const getFilteredProducts = () => {
     let filtered = products;
 
-    // Filter theo category
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(product => product.categoryId === selectedCategory);
     }
 
-    // Filter theo search term
     if (searchTerm) {
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -119,7 +160,6 @@ const ProductPage = () => {
       );
     }
 
-    // Filter theo giá
     if (priceFilter.under100k || priceFilter.between100k200k || priceFilter.above200k) {
       filtered = filtered.filter(product => {
         const price = product.price;
@@ -131,7 +171,6 @@ const ProductPage = () => {
       });
     }
 
-    // Sort products
     switch (sortBy) {
       case 'price-low':
         filtered.sort((a, b) => a.price - b.price);
@@ -139,62 +178,14 @@ const ProductPage = () => {
       case 'price-high':
         filtered.sort((a, b) => b.price - a.price);
         break;
-      case 'newest':
-        filtered.sort((a, b) => b.displayIndex - a.displayIndex);
-        break;
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       default:
-        // Giữ thứ tự mặc định
         break;
     }
 
     return filtered;
-  };
-
-  const handleCategoryChange = async (categoryId) => {
-    setSelectedCategory(categoryId);
-    
-    // Nếu chọn category cụ thể, có thể fetch products theo category để có dữ liệu mới nhất
- if (categoryId !== 'all') {
-      setLoading(true);
-      try {
-        const result = await categoryService.getProductsByCategory(categoryId);
-        if (result.success && result.data.items) {
-          const mappedProducts = result.data.items.map(item => {
-            // Tìm category name từ danh sách categories hiện tại
-            const currentCategoryId = item.product?.categoryID || item.categoryID;
-            const category = categories.find(cat => cat.categoryID === currentCategoryId);
-            
-            return {
-              id: item.productItemID,
-              name: item.product?.name || item.name || 'Sản phẩm không tên',
-              categoryId: currentCategoryId,
-              categoryName: category?.name || 'Khác',
-              price: parseFloat(item.price) || 0,
-              priceFormatted: item.price?.toLocaleString('vi-VN') || '0',
-              image: item.productImages?.[0]?.imageUrl || '/api/placeholder/200/200',
-              description: item.description || item.product?.description || 'Sản phẩm chất lượng cao',
-              quantity: item.quantity || 0,
-              displayIndex: item.displayIndex || 0,
-              isDeleted: item.isDeleted || false
-            };
-          });
-          
-          const activeProducts = mappedProducts.filter(product => !product.isDeleted);
-          // Merge với products hiện tại hoặc update toàn bộ tùy logic
-          setProducts(prevProducts => {
-            const otherCategoryProducts = prevProducts.filter(p => p.categoryId !== categoryId);
-            return [...otherCategoryProducts, ...activeProducts];
-          });
-        }
-      } catch (error) {
-        console.error('Lỗi khi lấy sản phẩm theo category:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
   };
 
   const handlePriceFilterChange = (filterType) => {
@@ -202,6 +193,13 @@ const ProductPage = () => {
       ...prev,
       [filterType]: !prev[filterType]
     }));
+  };
+
+  const clearFilters = () => {
+    setSelectedCategory('all');
+    setSearchTerm('');
+    setPriceFilter({ under100k: false, between100k200k: false, above200k: false });
+    setSortBy('default');
   };
 
   const filteredProducts = getFilteredProducts();
@@ -214,7 +212,6 @@ const ProductPage = () => {
         <p>Khám phá bộ sưu tập gốm sứ được chế tác thủ công với tình yêu và sự tỉ mỉ</p>
       </div>
 
-      {/* Search Bar */}
       <div className="product-search">
         <div className="search-box">
           <input 
@@ -226,7 +223,6 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* Error message */}
       {error && (
         <div className="error-message">
           {error}
@@ -234,7 +230,6 @@ const ProductPage = () => {
       )}
 
       <div className="product-layout">
-        {/* Sidebar Filter */}
         <aside className="product-sidebar">
           <div className="filter-section">
             <h3>Danh mục sản phẩm</h3>
@@ -243,7 +238,7 @@ const ProductPage = () => {
                 <li key={category.id}>
                   <button
                     className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
-                    onClick={() => handleCategoryChange(category.id)}
+                    onClick={() => setSelectedCategory(category.id)}
                   >
                     <span className="category-name">{category.name}</span>
                     <span className="category-count">({category.count})</span>
@@ -284,7 +279,6 @@ const ProductPage = () => {
           </div>
         </aside>
 
-        {/* Product Grid */}
         <div className="product-main">
           <div className="product-header">
             <div className="product-count">
@@ -301,7 +295,6 @@ const ProductPage = () => {
                 <option value="price-low">Giá thấp đến cao</option>
                 <option value="price-high">Giá cao đến thấp</option>
                 <option value="name">Theo tên A-Z</option>
-                <option value="newest">Mới nhất</option>
               </select>
             </div>
           </div>
@@ -317,7 +310,12 @@ const ProductPage = () => {
                   <div className="product-image">
                     <img src={product.image} alt={product.name} />
                     <div className="product-overlay">
-                      <button className="quick-view-btn">Xem nhanh</button>
+                      <button 
+                        className="quick-view-btn"
+                        onClick={() => handleQuickView(product)}
+                      >
+                        Xem nhanh
+                      </button>
                     </div>
                   </div>
                   <div className="product-info">
@@ -325,7 +323,20 @@ const ProductPage = () => {
                     <p className="product-category">{product.categoryName}</p>
                     <p className="product-description">{product.description}</p>
                     <div className="product-price">{product.priceFormatted}đ</div>
-                    <button className="add-to-cart-btn">Thêm vào giỏ</button>
+                    <div className="product-stock">
+                      {product.quantity > 0 ? (
+                        <span className="in-stock">Còn {product.quantity} sản phẩm</span>
+                      ) : (
+                        <span className="out-of-stock">Hết hàng</span>
+                      )}
+                    </div>
+                    <button 
+                      className={`add-to-cart-btn ${product.quantity <= 0 ? 'disabled' : ''}`}
+                      onClick={() => addToCart(product)}
+                      disabled={product.quantity <= 0}
+                    >
+                      {product.quantity > 0 ? 'Thêm vào giỏ' : 'Hết hàng'}
+                    </button>
                   </div>
                 </div>
               ))}
@@ -335,20 +346,52 @@ const ProductPage = () => {
           {!loading && filteredProducts.length === 0 && (
             <div className="no-products">
               <p>Không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn.</p>
-              <button 
-                className="clear-filter-btn"
-                onClick={() => {
-                  setSelectedCategory('all');
-                  setSearchTerm('');
-                  setPriceFilter({ under100k: false, between100k200k: false, above200k: false });
-                }}
-              >
+              <button className="clear-filter-btn" onClick={clearFilters}>
                 Xóa bộ lọc
               </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <div className="modal-overlay" onClick={closeQuickView}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={closeQuickView}>×</button>
+            <div className="quick-view-content">
+              <div className="quick-view-image">
+                <img src={quickViewProduct.image} alt={quickViewProduct.name} />
+              </div>
+              <div className="quick-view-info">
+                <h2>{quickViewProduct.name}</h2>
+                <p className="quick-view-category">{quickViewProduct.categoryName}</p>
+                <div className="quick-view-price">{quickViewProduct.priceFormatted}đ</div>
+                <div className="quick-view-description">
+                  <h4>Mô tả:</h4>
+                  <p>{quickViewProduct.description}</p>
+                </div>
+                <div className="quick-view-quantity">
+                  <h4>Số lượng còn lại:</h4>
+                  <span className={quickViewProduct.quantity > 0 ? 'in-stock' : 'out-of-stock'}>
+                    {quickViewProduct.quantity > 0 ? `${quickViewProduct.quantity} sản phẩm` : 'Hết hàng'}
+                  </span>
+                </div>
+                <button 
+                  className={`add-to-cart-btn ${quickViewProduct.quantity <= 0 ? 'disabled' : ''}`}
+                  onClick={() => {
+                    addToCart(quickViewProduct);
+                    closeQuickView();
+                  }}
+                  disabled={quickViewProduct.quantity <= 0}
+                >
+                  {quickViewProduct.quantity > 0 ? 'Thêm vào giỏ hàng' : 'Hết hàng'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

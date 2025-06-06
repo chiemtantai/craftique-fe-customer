@@ -81,6 +81,25 @@ const productService = {
         error: error.response?.data || error.message
       };
     }
+  },
+
+  getProductItemById: async (productItemId) => {
+    try {
+      const response = await apiClient.get(`/ProductItem/${productItemId}`);
+      
+      return {
+        success: true,
+        data: response.data,
+        message: 'Lấy sản phẩm'
+      };
+    } catch (error) {
+      return {
+        success: false,
+        data: { items: [] },
+        message: error.response?.data?.message || 'Lỗi khi lấy sản phẩm',
+        error: error.response?.data || error.message
+      };
+    }
   }
 };
 
