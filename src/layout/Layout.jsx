@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import accountService from '../services/accountService'; // Import API service
 import './Layout.css';
@@ -9,8 +9,24 @@ function Layout({ children }) {
   const [userName, setUserName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+  // Lắng nghe sự kiện cartUpdated từ ProductPage
+  const handleCartUpdate = () => {
+    loadCartItemCount();
+  };
+
+  window.addEventListener('cartUpdated', handleCartUpdate);
+  
+  // Cleanup khi component unmount
+  return () => {
+    window.removeEventListener('cartUpdated', handleCartUpdate);
+  };
+}, []);
 
   // Kiểm tra trạng thái đăng nhập khi component mount
   useEffect(() => {
@@ -23,6 +39,19 @@ function Layout({ children }) {
     checkAuthStatus();
     loadCartItemCount();
   }, [location.pathname]);
+
+  // Đóng dropdown khi click bên ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Load cart item count from localStorage
   const loadCartItemCount = () => {
@@ -93,6 +122,7 @@ function Layout({ children }) {
       if (result.success) {
         setIsLoggedIn(false);
         setUserName('');
+        setShowUserDropdown(false);
         console.log(result.message);
         
         // Điều hướng về trang login
@@ -121,6 +151,23 @@ function Layout({ children }) {
     return name.length > 20 ? name.substring(0, 20) + '...' : name;
   };
 
+  // Toggle user dropdown
+  const handleUserNameClick = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
+  // Xem đơn hàng
+  const handleViewOrders = () => {
+    setShowUserDropdown(false);
+    navigate('/purchase-orders');
+  };
+
+  // Xem thông tin tài khoản
+  const handleViewProfile = () => {
+    setShowUserDropdown(false);
+    navigate('/profile');
+  };
+
   return (
     <div className="container">
       {/* Header */}
@@ -147,13 +194,34 @@ function Layout({ children }) {
               <span>Đang tải...</span>
             </div>
           ) : isLoggedIn ? (
-            <div className="user-section">
-              <span className="username" title={userName}>
-                {getDisplayUserName(userName)}
-              </span>
-              <button className="logout-button" onClick={handleLogout}>
-                Đăng xuất
-              </button>
+            <div className="user-section" ref={dropdownRef}>
+              <div className="user-dropdown-container">
+                <span 
+                  className="username clickable" 
+                  title={userName}
+                  onClick={handleUserNameClick}
+                >
+                  {getDisplayUserName(userName)} ▼
+                </span>
+                
+                {showUserDropdown && (
+                  <div className="user-dropdown">
+                    <div className="dropdown-item" onClick={handleViewProfile}>
+                      <span className="dropdown-icon">👤</span>
+                      Thông tin tài khoản
+                    </div>
+                    <div className="dropdown-item" onClick={handleViewOrders}>
+                      <span className="dropdown-icon">📦</span>
+                      Xem đơn hàng
+                    </div>
+                    <div className="dropdown-divider"></div>
+                    <div className="dropdown-item logout" onClick={handleLogout}>
+                      <span className="dropdown-icon">🚪</span>
+                      Đăng xuất
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <button className="login-nav-button" onClick={handleLoginClick}>

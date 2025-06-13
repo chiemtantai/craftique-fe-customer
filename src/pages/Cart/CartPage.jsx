@@ -84,9 +84,8 @@ const CartPage = () => {
       alert('Giỏ hàng của bạn đang trống!');
       return;
     }
-    // Navigate to checkout page or show checkout modal
-    console.log('Proceeding to checkout with items:', cartItems);
-    alert('Chức năng thanh toán sẽ được phát triển sau!');
+    // Navigate to OrderPage
+    navigate('/order');
   };
 
   if (loading) {
