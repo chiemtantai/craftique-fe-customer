@@ -2,14 +2,14 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://localhost:7218/api';
 
-const categoryAPI = axios.create({
-  baseURL: `${API_BASE_URL}/Category`,
+const productImgAPI = axios.create({
+  baseURL: `${API_BASE_URL}/ProductImgs`,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-categoryAPI.interceptors.request.use(
+productImgAPI.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
@@ -20,6 +20,6 @@ categoryAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export const categoryService = {
-  getAll: () => categoryAPI.get('/'),
+export const productImgService = {
+  getAll: () => productImgAPI.get('/'),
 };

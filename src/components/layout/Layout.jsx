@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import accountService from '../services/accountService'; // Import API service
+import accountService from '../../services/accountService'
+import AddToCart from '../features/products/AddToCart';
 import './Layout.css';
 
 function Layout({ children }) {
@@ -15,26 +16,22 @@ function Layout({ children }) {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-  // Lắng nghe sự kiện cartUpdated từ ProductPage
-  const handleCartUpdate = () => {
-    loadCartItemCount();
-  };
+    const handleCartUpdate = () => {
+      loadCartItemCount();
+    };
 
-  window.addEventListener('cartUpdated', handleCartUpdate);
-  
-  // Cleanup khi component unmount
-  return () => {
-    window.removeEventListener('cartUpdated', handleCartUpdate);
-  };
-}, []);
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, []);
 
-  // Kiểm tra trạng thái đăng nhập khi component mount
   useEffect(() => {
     checkAuthStatus();
     loadCartItemCount();
   }, []);
-
-  // Kiểm tra lại auth status khi location thay đổi (sau khi login thành công)
+  
   useEffect(() => {
     checkAuthStatus();
     loadCartItemCount();
@@ -61,6 +58,7 @@ function Layout({ children }) {
         const cartItems = JSON.parse(savedCart);
         const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
         setCartItemCount(totalCount);
+        console.log('Cart count updated:', totalCount); // Debug log
       } else {
         setCartItemCount(0);
       }
@@ -70,6 +68,25 @@ function Layout({ children }) {
     }
   };
 
+  useEffect(() => {
+    const handleCartUpdate = (event) => {
+      // Load lại cart count ngay lập tức
+      loadCartItemCount();
+      
+      // Log để debug
+      if (event.detail) {
+        console.log('Cart updated with product:', event.detail.product);
+      }
+    };
+
+    // Lắng nghe cả event thường và custom event
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, []);
+
   const checkAuthStatus = () => {
     try {
       const isAuth = accountService.isAuthenticated();
@@ -78,11 +95,10 @@ function Layout({ children }) {
       setIsLoggedIn(isAuth);
       
       if (isAuth && currentUser) {
-        // Ưu tiên hiển thị name, sau đó fullName, cuối cùng là email
+        // Ưu tiên hiển thị name, sau đó userName, cuối cùng là userID
         const displayName = currentUser.name || 
-                           currentUser.fullName || 
-                           currentUser.displayName ||
-                           currentUser.email || 
+                           currentUser.userName || 
+                           currentUser.userID ||
                            'User';
         setUserName(displayName);
         console.log('User đã đăng nhập:', displayName);
@@ -116,21 +132,21 @@ function Layout({ children }) {
     navigate('/cart');
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     try {
-      const result = accountService.logout();
-      if (result.success) {
-        setIsLoggedIn(false);
-        setUserName('');
-        setShowUserDropdown(false);
-        console.log(result.message);
-        
-        // Điều hướng về trang login
-        navigate('/login');
-        
-        // Có thể thêm thông báo thành công
-        // toast.success('Đăng xuất thành công');
-      }
+      // Gọi logout từ accountService (không cần await vì nó không phải async)
+      accountService.logout();
+      
+      // Cập nhật state
+      setIsLoggedIn(false);
+      setUserName('');
+      setShowUserDropdown(false);
+      
+      console.log('Đăng xuất thành công');
+      
+      // Điều hướng về trang login
+      navigate('/login');
+      
     } catch (error) {
       console.error('Lỗi khi đăng xuất:', error);
     }
@@ -140,33 +156,29 @@ function Layout({ children }) {
     navigate(path);
   };
 
-  // Hàm kiểm tra active nav
   const isActiveNav = (path) => {
     return location.pathname === path;
   };
 
-  // Hàm để cắt ngắn tên user nếu quá dài
   const getDisplayUserName = (name) => {
     if (!name) return 'User';
     return name.length > 20 ? name.substring(0, 20) + '...' : name;
   };
 
-  // Toggle user dropdown
   const handleUserNameClick = () => {
     setShowUserDropdown(!showUserDropdown);
   };
 
-  // Xem đơn hàng
   const handleViewOrders = () => {
     setShowUserDropdown(false);
-    navigate('/purchase-orders');
+    navigate('/order');
   };
 
-  // Xem thông tin tài khoản
   const handleViewProfile = () => {
     setShowUserDropdown(false);
     navigate('/profile');
   };
+
 
   return (
     <div className="container">
@@ -346,4 +358,5 @@ function Layout({ children }) {
   );
 }
 
+export { AddToCart };
 export default Layout;

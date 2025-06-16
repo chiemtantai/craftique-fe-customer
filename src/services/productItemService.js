@@ -2,16 +2,16 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://localhost:7218/api';
 
-const categoryAPI = axios.create({
-  baseURL: `${API_BASE_URL}/Category`,
+const productItemAPI = axios.create({
+  baseURL: `${API_BASE_URL}/ProductItem`,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-categoryAPI.interceptors.request.use(
+productItemAPI.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -20,6 +20,7 @@ categoryAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export const categoryService = {
-  getAll: () => categoryAPI.get('/'),
+export const productItemService = {
+  getAll: () => productItemAPI.get('/'),
+  getById: (id) => productItemAPI.get(`/${id}`),
 };

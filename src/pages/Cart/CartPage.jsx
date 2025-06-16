@@ -1,159 +1,178 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './CartPage.css'
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./CartPage.css";
 
-const CartPage = () => {
+function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Load cart items from localStorage on component mount
   useEffect(() => {
     loadCartItems();
   }, []);
 
+  // Load cart items from localStorage
   const loadCartItems = () => {
     try {
-      const savedCart = localStorage.getItem('cartItems');
+      const savedCart = localStorage.getItem("cartItems");
       if (savedCart) {
-        const parsedCart = JSON.parse(savedCart);
-        setCartItems(parsedCart);
+        const items = JSON.parse(savedCart);
+        setCartItems(items);
+      } else {
+        setCartItems([]);
       }
     } catch (error) {
-      console.error('Error loading cart items:', error);
+      console.error("Lỗi khi tải giỏ hàng:", error);
+      setCartItems([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Save cart items to localStorage
-  const saveCartItems = (items) => {
+  // Update cart items to localStorage
+  const updateCartItems = (newItems) => {
     try {
-      localStorage.setItem('cartItems', JSON.stringify(items));
+      localStorage.setItem("cartItems", JSON.stringify(newItems));
+      setCartItems(newItems);
+      // Dispatch event để update cart count
+      window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
-      console.error('Error saving cart items:', error);
+      console.error("Lỗi khi cập nhật giỏ hàng:", error);
     }
   };
 
-  // Update quantity of an item
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) {
-      removeItem(productId);
-      return;
-    }
+  // Handle quantity change
+  const handleQuantityChange = (productId, newQuantity) => {
+    if (newQuantity < 1) return;
 
-    const updatedItems = cartItems.map(item => {
-      if (item.id === productId) {
-        return { ...item, quantity: newQuantity };
-      }
-      return item;
-    });
-
-    setCartItems(updatedItems);
-    saveCartItems(updatedItems);
+    const updatedItems = cartItems.map((item) =>
+      item.id === productId ? { ...item, quantity: newQuantity } : item
+    );
+    updateCartItems(updatedItems);
   };
 
   // Remove item from cart
-  const removeItem = (productId) => {
-    const updatedItems = cartItems.filter(item => item.id !== productId);
-    setCartItems(updatedItems);
-    saveCartItems(updatedItems);
+  const handleRemoveItem = (productId) => {
+    const updatedItems = cartItems.filter((item) => item.id !== productId);
+    updateCartItems(updatedItems);
   };
 
-  // Clear entire cart
-  const clearCart = () => {
-    setCartItems([]);
-    localStorage.removeItem('cartItems');
+  // Clear all cart
+  const handleClearCart = () => {
+    if (
+      window.confirm(
+        "Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng?"
+      )
+    ) {
+      updateCartItems([]);
+    }
   };
 
   // Calculate total price
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
-      return total + (item.price * item.quantity);
-    }, 0);
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  };
+
+  // Format price
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
+
+  const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      alert("Giỏ hàng của bạn đang trống!");
+      return;
+    }
+    navigate("/purchase-order");
   };
 
   // Continue shopping
-  const continueShopping = () => {
-    navigate('/products');
-  };
-
-  // Proceed to checkout
-  const proceedToCheckout = () => {
-    if (cartItems.length === 0) {
-      alert('Giỏ hàng của bạn đang trống!');
-      return;
-    }
-    // Navigate to OrderPage
-    navigate('/order');
+  const handleContinueShopping = () => {
+    navigate("/products");
   };
 
   if (loading) {
     return (
       <div className="cart-page">
-        <div className="loading-message">
-          <p>Đang tải giỏ hàng...</p>
-        </div>
+        <div className="loading">Đang tải giỏ hàng...</div>
       </div>
     );
   }
 
   return (
     <div className="cart-page">
-      <div className="page-header">
+      <div className="cart-header">
         <h1>Giỏ hàng của bạn</h1>
-        {cartItems.length > 0 && (
-          <p>Bạn có {cartItems.length} sản phẩm trong giỏ hàng</p>
-        )}
+        <div className="cart-actions">
+          <button
+            className="continue-shopping-btn"
+            onClick={handleContinueShopping}
+          >
+            Tiếp tục mua sắm
+          </button>
+          {cartItems.length > 0 && (
+            <button className="clear-cart-btn" onClick={handleClearCart}>
+              Xóa tất cả
+            </button>
+          )}
+        </div>
       </div>
 
       {cartItems.length === 0 ? (
         <div className="empty-cart">
           <div className="empty-cart-icon">🛒</div>
           <h2>Giỏ hàng của bạn đang trống</h2>
-          <p>Hãy khám phá những sản phẩm gốm sứ thủ công tuyệt đẹp của chúng tôi</p>
-          <button className="continue-shopping-btn" onClick={continueShopping}>
-            Tiếp tục mua sắm
+          <p>
+            Hãy khám phá những sản phẩm gốm sứ thủ công tuyệt đẹp của chúng tôi
+          </p>
+          <button className="shop-now-btn" onClick={handleContinueShopping}>
+            Mua sắm ngay
           </button>
         </div>
       ) : (
         <div className="cart-content">
           <div className="cart-items">
-            <div className="cart-header">
-              <span className="header-product">Sản Phẩm</span>
-              <span className="header-price">Đơn Giá</span>
-              <span className="header-quantity">Số Lượng</span>
-              <span className="header-total">Thành Tiền</span>
-              <span className="header-action">Thao Tác</span>
-            </div>
-
-            {cartItems.map(item => (
+            {cartItems.map((item) => (
               <div key={item.id} className="cart-item">
-                <div className="item-product">
-                  <img src={item.image} alt={item.name} className="item-image" />
-                  <div className="item-details">
-                    <h3 className="item-name">{item.name}</h3>
-                    <p className="item-category">{item.categoryName}</p>
-                    <p className="item-description">{item.description}</p>
-                  </div>
+                <div className="item-image">
+                  <img
+                    src={item.image || "/placeholder-image.jpg"}
+                    alt={item.name}
+                    onError={(e) => {
+                      e.target.src = "/placeholder-image.jpg";
+                    }}
+                  />
                 </div>
 
-                <div className="item-price">
-                  {item.price.toLocaleString('vi-VN')}đ
+                <div className="item-details">
+                  <h3 className="item-name">{item.name}</h3>
+                  <p className="item-price">{formatPrice(item.price)}</p>
                 </div>
 
                 <div className="item-quantity">
+                  <label>Số lượng:</label>
                   <div className="quantity-controls">
-                    <button 
-                      className="quantity-btn minus"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity - 1)
+                      }
+                      disabled={item.quantity <= 1}
+                      className="quantity-btn"
                     >
                       -
                     </button>
-                    <span className="quantity-value">{item.quantity}</span>
-                    <button 
-                      className="quantity-btn plus"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    <span className="quantity-display">{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity + 1)
+                      }
+                      className="quantity-btn"
                     >
                       +
                     </button>
@@ -161,16 +180,19 @@ const CartPage = () => {
                 </div>
 
                 <div className="item-total">
-                  {(item.price * item.quantity).toLocaleString('vi-VN')}đ
+                  <span className="total-label">Tổng:</span>
+                  <span className="total-price">
+                    {formatPrice(item.price * item.quantity)}
+                  </span>
                 </div>
 
-                <div className="item-action">
-                  <button 
+                <div className="item-actions">
+                  <button
+                    onClick={() => handleRemoveItem(item.id)}
                     className="remove-btn"
-                    onClick={() => removeItem(item.id)}
                     title="Xóa sản phẩm"
                   >
-                    Xóa
+                    🗑️
                   </button>
                 </div>
               </div>
@@ -180,42 +202,40 @@ const CartPage = () => {
           <div className="cart-summary">
             <div className="summary-card">
               <h3>Tóm tắt đơn hàng</h3>
-              
+
+              <div className="summary-row">
+                <span>Số lượng sản phẩm:</span>
+                <span>
+                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              </div>
+
               <div className="summary-row">
                 <span>Tạm tính:</span>
-                <span>{calculateTotal().toLocaleString('vi-VN')}đ</span>
+                <span>{formatPrice(calculateTotal())}</span>
               </div>
-              
-              <div className="summary-row">
+
+              {/* <div className="summary-row">
                 <span>Phí vận chuyển:</span>
                 <span>Miễn phí</span>
-              </div>
-              
-              <div className="summary-row total-row">
+              </div> */}
+
+              <div className="summary-divider"></div>
+
+              <div className="summary-row total">
                 <span>Tổng cộng:</span>
-                <span className="total-price">{calculateTotal().toLocaleString('vi-VN')}đ</span>
+                <span>{formatPrice(calculateTotal())}</span>
               </div>
 
-              <div className="cart-actions">
-                <button className="continue-shopping-btn" onClick={continueShopping}>
-                  Tiếp tục mua sắm
-                </button>
-                <button className="checkout-btn" onClick={proceedToCheckout}>
-                  Thanh toán
-                </button>
-              </div>
-
-              <div className="cart-footer-actions">
-                <button className="clear-cart-btn" onClick={clearCart}>
-                  Xóa toàn bộ giỏ hàng
-                </button>
-              </div>
+              <button className="checkout-btn" onClick={handleCheckout}>
+                Tiến hành thanh toán
+              </button>
             </div>
           </div>
         </div>
       )}
     </div>
   );
-};
+}
 
 export default CartPage;

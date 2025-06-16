@@ -93,19 +93,6 @@ body {
   background: #654321;
 }
 
-.cart-button, .login-nav-button, .logout-button {
-  background: #8B4513;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  min-width: 80px;
-}
-
 .cart-button:hover, .login-nav-button:hover, .logout-button:hover {
   background: #654321;
   transform: translateY(-1px);
@@ -211,7 +198,6 @@ body {
 .main-content {
   flex: 1;
   padding: 40px 20px;
-  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
@@ -638,7 +624,6 @@ body {
   font-weight: 500;
   transition: all 0.3s ease;
   min-width: 80px;
-  display: flex;
   align-items: center;
   gap: 5px;
 }
