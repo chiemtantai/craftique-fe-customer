@@ -1,4 +1,4 @@
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, provider } from "../firebaseConfig";
 import axios from "axios";
 
@@ -12,14 +12,17 @@ const googleService = {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       
-      // Lấy ID token từ Firebase
-      const idToken = await user.getIdToken();
+      const credential = GoogleAuthProvider.credentialFromResult (result);
+      const idToken = credential?.idToken;
+      
+      console.log("Firebase User:", user);
+      console.log("ID Token:", idToken);
       
       // Gửi thông tin đến backend
       const response = await axios.post(`${API_BASE_URL}/Account/GoogleLogin`, {
-        idToken,
+        idToken: idToken,
         email: user.email,
-        name: user.displayName,
+        name: user.displayName || user.email,
         phoneNumber: user.phoneNumber || ""
       }, {
         headers: {
@@ -27,14 +30,15 @@ const googleService = {
         }
       });
 
-      const { accessToken, refreshToken, userID, userName, name, address } = response.data;
+      console.log("Backend Response:", response.data);
+
+      const { accessToken, refreshToken, userID, userName, name } = response.data;
 
       // Lưu thông tin user
       const userData = {
         userID,
         userName,
         name,
-        address: address || null,
         email: user.email,
         photoURL: user.photoURL
       };
@@ -45,9 +49,26 @@ const googleService = {
 
       return response.data;
     } catch (error) {
+      console.error("Google Login Error:", error);
+      
       // Đăng xuất Firebase nếu có lỗi
-      await auth.signOut();
-      throw error.response?.data || { message: "Đăng nhập Google thất bại" };
+      try {
+        await auth.signOut();
+      } catch (signOutError) {
+        console.error("Error signing out:", signOutError);
+      }
+      
+      // Throw error with more details
+      if (error.response) {
+        console.error("Error Response:", error.response.data);
+        throw error.response.data;
+      } else if (error.request) {
+        console.error("Error Request:", error.request);
+        throw { message: "Không thể kết nối tới server" };
+      } else {
+        console.error("Error Message:", error.message);
+        throw { message: error.message || "Đăng nhập Google thất bại" };
+      }
     }
   },
 

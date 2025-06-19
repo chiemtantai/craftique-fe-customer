@@ -51,12 +51,6 @@ function LoginPage() {
     try {
       await googleService.loginWithGoogle();
       
-      if (!accountService.hasCustomerAccess()) {
-        googleService.logoutGoogle();
-        setError('Bạn không có quyền truy cập vào hệ thống này. Chỉ Customer được phép.');
-        return;
-      }
-
       navigate('/home');
     } catch (error) {
       setError(error.message || 'Đăng nhập Google thất bại');
