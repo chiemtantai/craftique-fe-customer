@@ -187,7 +187,7 @@ function Layout({ children }) {
         <div className="contact-info">
           <span>📞0987654321</span>
           <span>📞0123456789</span>
-          <span>📧Craftique2023@gmail.com</span>
+          <span>📧craftique68@gmail.com</span>
         </div>
         <div className="logo-container">
           <h1 onClick={() => handleNavClick('/')}>Craftique</h1>
@@ -305,7 +305,7 @@ function Layout({ children }) {
           <h3>Gốm sứ Craftique</h3>
           <p>📞0987654321</p>
           <p>📞0123456789</p>
-          <p>📧Craftique2023@gmail.com</p>
+          <p>📧craftique68@gmail.com</p>
         </div>
         
         <div className="footer-column">
