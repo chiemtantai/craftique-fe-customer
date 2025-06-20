@@ -21,6 +21,30 @@ productItemAPI.interceptors.request.use(
 );
 
 export const productItemService = {
-  getAll: () => productItemAPI.get('/'),
+  getAll: (params = {}) => {
+    // Build query string from parameters
+    const queryParams = new URLSearchParams();
+    
+    if (params.pageNumber) {
+      queryParams.append('pageNumber', params.pageNumber);
+    }
+    if (params.pageSize) {
+      queryParams.append('pageSize', params.pageSize);
+    }
+    if (params.categoryId !== undefined && params.categoryId !== null) {
+      queryParams.append('categoryId', params.categoryId);
+    }
+    if (params.searchTerm) {
+      queryParams.append('searchTerm', params.searchTerm);
+    }
+    if (params.sortBy) {
+      queryParams.append('sortBy', params.sortBy);
+    }
+    
+    const queryString = queryParams.toString();
+    const url = queryString ? `/?${queryString}` : '/';
+    
+    return productItemAPI.get(url);
+  },
   getById: (id) => productItemAPI.get(`/${id}`),
 };

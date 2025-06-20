@@ -3,20 +3,61 @@ import { productItemService } from '../../../services/productItemService';
 import ProductImg from './ProductImg';
 import AddToCart from './AddToCart';
 
-function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate }) {
+function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate, currentPage, onPageChange }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    totalItems: 0,
+    pageNumber: 1,
+    pageSize: 12,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+    pages: []
+  });
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [currentPage, selectedCategory, searchTerm, sortBy]);
 
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const response = await productItemService.getAll();
-      setProducts(response.data?.items || []);
+      const params = {
+        pageNumber: currentPage,
+        pageSize: 10
+      };
+
+      // Add category filter if selected
+      if (selectedCategory !== null) {
+        params.categoryId = selectedCategory;
+      }
+
+      // Add search term if provided
+      if (searchTerm) {
+        params.searchTerm = searchTerm;
+      }
+
+      // Add sort parameter
+      if (sortBy && sortBy !== 'default') {
+        params.sortBy = sortBy;
+      }
+
+      const response = await productItemService.getAll(params);
+      
+      if (response.data) {
+        setProducts(response.data.items || []);
+        setPagination({
+          totalItems: response.data.totalItems || 0,
+          pageNumber: response.data.pageNumber || 1,
+          pageSize: response.data.pageSize || 12,
+          totalPages: response.data.totalPages || 0,
+          hasNextPage: response.data.hasNextPage || false,
+          hasPreviousPage: response.data.hasPreviousPage || false,
+          pages: response.data.pages || []
+        });
+      }
     } catch (error) {
       console.error('Lỗi khi tải sản phẩm:', error);
       setError('Không thể tải sản phẩm');
@@ -24,32 +65,6 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate })
       setLoading(false);
     }
   };
-
-  // Filter products based on category and search term
-  const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === null || 
-      product.product?.categoryID === selectedCategory;
-    
-    const matchesSearch = !searchTerm || 
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesCategory && matchesSearch && !product.isDeleted;
-  });
-
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
-      case 'name':
-        return a.name.localeCompare(b.name);
-      default:
-        return a.displayIndex - b.displayIndex;
-    }
-  });
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -71,6 +86,24 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate })
     }
   };
 
+  const handlePageClick = (pageNumber) => {
+    if (onPageChange) {
+      onPageChange(pageNumber);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (pagination.hasPreviousPage && onPageChange) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pagination.hasNextPage && onPageChange) {
+      onPageChange(currentPage + 1);
+    }
+  };
+
   if (loading) {
     return (
       <div className="product-list-container">
@@ -87,7 +120,7 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate })
     );
   }
 
-  if (sortedProducts.length === 0) {
+  if (products.length === 0) {
     return (
       <div className="product-list-container">
         <div className="no-products">Không tìm thấy sản phẩm nào</div>
@@ -98,11 +131,11 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate })
   return (
     <div className="product-list-container">
       <div className="product-count">
-        Hiển thị {sortedProducts.length} sản phẩm
+        Hiển thị {products.length} trong tổng số {pagination.totalItems} sản phẩm
       </div>
       
       <div className="products-grid">
-        {sortedProducts.map(product => (
+        {products.map(product => (
           <div key={product.productItemID} className="product-card">
             <div className="product-image">
               <ProductImg images={product.productImgs || []} />
@@ -139,6 +172,49 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate })
           </div>
         ))}
       </div>
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <div className="pagination-container">
+          <div className="pagination">
+            {/* Previous Button */}
+            <button
+              className={`pagination-btn pagination-prev ${!pagination.hasPreviousPage ? 'disabled' : ''}`}
+              onClick={handlePreviousPage}
+              disabled={!pagination.hasPreviousPage}
+            >
+              ‹ Trước
+            </button>
+
+            {/* Page Numbers */}
+            <div className="pagination-numbers">
+              {pagination.pages.map(pageNum => (
+                <button
+                  key={pageNum}
+                  className={`pagination-number ${pageNum === pagination.pageNumber ? 'active' : ''}`}
+                  onClick={() => handlePageClick(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              className={`pagination-btn pagination-next ${!pagination.hasNextPage ? 'disabled' : ''}`}
+              onClick={handleNextPage}
+              disabled={!pagination.hasNextPage}
+            >
+              Sau ›
+            </button>
+          </div>
+
+          {/* Page Info */}
+          <div className="pagination-info">
+            Trang {pagination.pageNumber} / {pagination.totalPages}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

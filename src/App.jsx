@@ -7,6 +7,7 @@ import AboutPage from './pages/About/AboutPage.jsx';
 import WorkshopPage from './pages/Workshop/WorkshopPage.jsx';
 import ProductPage from './pages/Product/ProductPage.jsx';
 import BlogPage from './pages/Blog/BlogPage.jsx';
+import BlogDetailPage from './pages/BlogDetail/BlogDetailPage.jsx';
 import CartPage from './pages/Cart/CartPage.jsx';
 import OrderPage from './pages/Order/OrderPage.jsx';
 import OrderDetailPage from './pages/OrderDetail/OrderDetailPage.jsx';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/workshop" element={<Layout><WorkshopPage /></Layout>} />
         <Route path="/products" element={<Layout><ProductPage /></Layout>} />
         <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+        <Route path="/blog/:blogID" element={<Layout><BlogDetailPage /></Layout>} />
         <Route path="/cart" element={<Layout><CartPage /></Layout>} />
         <Route path="/order" element={<Layout><OrderPage /></Layout>} />
         <Route path="/order/:orderID" element={<Layout><OrderDetailPage /></Layout>} />

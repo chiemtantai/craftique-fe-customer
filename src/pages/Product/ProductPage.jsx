@@ -7,30 +7,30 @@ function ProductPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('default');
-  // const [priceRange, setPriceRange] = useState({ min: 0, max: 1000000 });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
+    setCurrentPage(1); // Reset to first page when category changes
   };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when search changes
   };
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
+    setCurrentPage(1); // Reset to first page when sort changes
   };
 
-  // const handlePriceRangeChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setPriceRange(prev => ({
-  //     ...prev,
-  //     [name]: parseInt(value) || 0
-  //   }));
-  // };
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-const handleCartUpdate = (product) => {
-    // Dispatch event để Layout component cập nhật cart count ngay lập tức
+  const handleCartUpdate = (product) => {
     const cartUpdatedEvent = new CustomEvent('cartUpdated', {
       detail: { product, timestamp: Date.now() }
     });
@@ -41,13 +41,6 @@ const handleCartUpdate = (product) => {
       window.dispatchEvent(new Event('cartUpdated'));
     }, 100);
   };
-
-  // const resetFilters = () => {
-  //   setSelectedCategory(null);
-  //   setSearchTerm('');
-  //   setSortBy('default');
-  //   setPriceRange({ min: 0, max: 1000000 });
-  // };
 
   return (
     <div className="product-page">
@@ -64,35 +57,6 @@ const handleCartUpdate = (product) => {
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
-
-          {/* Price Filter */}
-          {/* <div className="filter-section">
-            <h3>Lọc theo giá</h3>
-            <div className="price-inputs">
-              <input
-                type="number"
-                name="min"
-                placeholder="Từ"
-                value={priceRange.min}
-                onChange={handlePriceRangeChange}
-                className="price-input"
-              />
-              <span>-</span>
-              <input
-                type="number"
-                name="max"
-                placeholder="Đến"
-                value={priceRange.max}
-                onChange={handlePriceRangeChange}
-                className="price-input"
-              />
-            </div>
-          </div> */}
-
-          {/* Reset Filters */}
-          {/* <button className="reset-filters-btn" onClick={resetFilters}>
-            Xóa bộ lọc
-          </button> */}
         </aside>
 
         {/* Main Content */}
@@ -131,7 +95,8 @@ const handleCartUpdate = (product) => {
             selectedCategory={selectedCategory}
             searchTerm={searchTerm}
             sortBy={sortBy}
-            // priceRange={priceRange}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
             onCartUpdate={handleCartUpdate}
           />
         </main>
