@@ -12,6 +12,7 @@ import CartPage from './pages/Cart/CartPage.jsx';
 import OrderPage from './pages/Order/OrderPage.jsx';
 import OrderDetailPage from './pages/OrderDetail/OrderDetailPage.jsx';
 import PurchaseOrder from './pages/PurchaseOrder/PurchaseOrderPage.jsx';
+import PaymentCallback from './components/features/payment/PaymentCallback.jsx';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/order" element={<Layout><OrderPage /></Layout>} />
         <Route path="/order/:orderID" element={<Layout><OrderDetailPage /></Layout>} />
         <Route path="/purchase-order" element={<Layout><PurchaseOrder /></Layout>} />
+        <Route path="/payment-callback" element={<Layout><PaymentCallback /></Layout>} />
         {/* Default route */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
       </Routes>

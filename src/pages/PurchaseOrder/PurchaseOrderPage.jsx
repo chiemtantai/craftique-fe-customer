@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { orderService } from '../../services/orderService'
+import { orderService } from '../../services/orderService';
+import { paymentService } from '../../services/paymentService';
 import './PurchaseOrderPage.css';
 
 function PurchaseOrderPage() {
@@ -32,11 +33,25 @@ function PurchaseOrderPage() {
   ];
 
   useEffect(() => {
+    // Kiểm tra nếu thanh toán đã được xử lý
+    const paymentProcessed = localStorage.getItem('paymentProcessed');
+    if (paymentProcessed === 'true') {
+      localStorage.removeItem('paymentProcessed');
+      navigate('/order', { 
+        state: { 
+          success: true, 
+          message: 'Thanh toán đã được xử lý thành công!' 
+        },
+        replace: true
+      });
+      return;
+    }
+
     checkAuth();
     loadCartItems();
   }, []);
 
-  // Check if user is authenticated
+  // Check authentication
   const checkAuth = () => {
     try {
       const token = localStorage.getItem('accessToken');
@@ -55,7 +70,6 @@ function PurchaseOrderPage() {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
       
-      // Auto-fill form data from user information
       setFormData(prev => ({
         ...prev,
         fullName: parsedUser.fullName || parsedUser.name || '',
@@ -74,7 +88,7 @@ function PurchaseOrderPage() {
     }
   };
 
-  // Load cart items from localStorage
+  // Load cart items
   const loadCartItems = () => {
     try {
       const savedCart = localStorage.getItem('cartItems');
@@ -98,7 +112,7 @@ function PurchaseOrderPage() {
     }
   };
 
-  // Handle form input changes
+  // Handle form changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -107,23 +121,20 @@ function PurchaseOrderPage() {
     }));
   };
 
-  // Calculate subtotal
+  // Calculate prices
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  // Get shipping price
   const getShippingPrice = () => {
     const method = shippingMethods.find(m => m.id === formData.shippingMethodID);
     return method ? method.price : 0;
   };
 
-  // Calculate total
   const calculateTotal = () => {
     return calculateSubtotal() + getShippingPrice();
   };
 
-  // Format price
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -131,54 +142,106 @@ function PurchaseOrderPage() {
     }).format(price);
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  // Validate form
+  const validateForm = () => {
     if (!formData.fullName.trim()) {
       alert('Vui lòng nhập họ tên');
-      return;
+      return false;
     }
     
     if (!formData.email.trim()) {
       alert('Vui lòng nhập email');
-      return;
+      return false;
     }
     
     if (!formData.address.trim()) {
       alert('Vui lòng nhập địa chỉ giao hàng');
-      return;
+      return false;
     }
 
-    setSubmitting(true);
-    
-    try {
-      const orderData = {
-        userID: user.id || user.userID,
-        orderDate: new Date().toISOString(),
-        address: formData.address,
-        paymentMethod: formData.paymentMethod,
-        shippingMethodID: formData.shippingMethodID,
-        total: calculateTotal(),
-        voucherID: formData.voucherID || 0,
-        orderDetails: cartItems.map(item => ({
-          productItemID: item.id,
-          quantity: item.quantity,
-          price: item.price
-        })),
-        // Include customer info
-        customerInfo: {
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone
-        }
-      };
+    return true;
+  };
 
+  // Create order data
+  const createOrderData = () => {
+    const timestamp = Date.now();
+    return {
+      userID: user.id || user.userID,
+      orderDate: new Date().toISOString(),
+      address: formData.address,
+      paymentMethod: formData.paymentMethod,
+      shippingMethodID: formData.shippingMethodID,
+      total: calculateTotal(),
+      voucherID: formData.voucherID || 0,
+      orderDetails: cartItems.map(item => ({
+        productItemID: item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      customerInfo: {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone
+      },
+      // Thêm unique identifier để tránh duplicate
+      clientOrderId: `${user.id || user.userID}_${timestamp}_${Math.random().toString(36).substr(2, 9)}`
+    };
+  };
+
+  // Handle bank payment
+  const handleBankPayment = async () => {
+    try {
+      const totalAmount = calculateTotal();
+      const orderData = createOrderData();
+      
+      // Kiểm tra nếu đã có pending order data (tránh duplicate)
+      const existingPendingData = localStorage.getItem('pendingOrderData');
+      if (existingPendingData) {
+        const existingData = JSON.parse(existingPendingData);
+        // Nếu cùng user và cùng total thì có thể là duplicate
+        if (existingData.userID === orderData.userID && existingData.total === orderData.total) {
+          const timeDiff = Date.now() - new Date(existingData.orderDate).getTime();
+          if (timeDiff < 300000) { // 5 phút
+            alert('Đã có yêu cầu thanh toán đang xử lý. Vui lòng chờ hoặc reload trang.');
+            return;
+          }
+        }
+      }
+      
+      // Save order data to localStorage for later use after payment success
+      localStorage.setItem('pendingOrderData', JSON.stringify(orderData));
+      
+      const paymentResponse = await paymentService.requestTopup(totalAmount);
+      
+      if (paymentResponse.payUrl) {
+        // Redirect to payment page in the same window
+        window.location.href = paymentResponse.payUrl;
+      }
+    } catch (error) {
+      console.error('Lỗi thanh toán ngân hàng:', error);
+      
+      if (error.response?.status === 401) {
+        navigate('/login', { 
+          state: { 
+            from: '/purchase-order',
+            message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.' 
+          }
+        });
+      } else {
+        alert('Có lỗi xảy ra khi tạo thanh toán. Vui lòng thử lại sau.');
+      }
+    }
+  };
+
+  // Handle order creation (for COD and other non-bank payments)
+  const createOrder = async () => {
+    try {
+      const orderData = createOrderData();
       console.log('Sending order data:', orderData);
+      
       const response = await orderService.create(orderData);
       
       if (response.data) {
-        // Clear cart after successful order
         localStorage.removeItem('cartItems');
         window.dispatchEvent(new Event('cartUpdated'));
         
@@ -195,8 +258,29 @@ function PurchaseOrderPage() {
             message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.' 
           }
         });
+      } else if (error.response?.status === 409) {
+        alert('Đơn hàng đã tồn tại. Vui lòng kiểm tra lại.');
+        navigate('/order');
       } else {
         alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.');
+      }
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    if (submitting) return; // Ngăn chặn multiple submissions
+
+    setSubmitting(true);
+    
+    try {
+      if (formData.paymentMethod === 'Bank') {
+        await handleBankPayment();
+      } else {
+        await createOrder();
       }
     } finally {
       setSubmitting(false);
@@ -332,7 +416,8 @@ function PurchaseOrderPage() {
               className="submit-order-btn"
               disabled={submitting}
             >
-              {submitting ? 'Đang xử lý...' : 'Đặt hàng'}
+              {submitting ? 'Đang xử lý...' : 
+               formData.paymentMethod === 'Bank' ? 'Thanh toán ngân hàng' : 'Đặt hàng'}
             </button>
           </form>
         </div>
