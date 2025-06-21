@@ -3,6 +3,7 @@ import './App.css';
 import Layout from './components/layout/Layout.jsx';
 import HomePage from './pages/Homepage/HomePage.jsx';
 import LoginPage from './pages/Login/LoginPage.jsx';
+import RegisterPage from './pages/Register/RegisterPage.jsx';
 import AboutPage from './pages/About/AboutPage.jsx';
 import WorkshopPage from './pages/Workshop/WorkshopPage.jsx';
 import ProductPage from './pages/Product/ProductPage.jsx';
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         {/* Route cho login (không có Layout) */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         
         {/* Các route khác có Layout */}
         <Route path="/home" element={<Layout><HomePage /></Layout>} />

@@ -46,14 +46,16 @@
 }
 
 .category-list {
-  background: #f8f8f8;
+  background: #F5E6D3;
   padding: 20px;
   border-radius: 8px;
+  border: 2px solid #deb887;
   margin: 20px;
   color: black;
 }
 
 .category-list h3{
+  border-radius: 8px;
   padding: 10px;
   margin: 10px;
   color: black;
@@ -72,6 +74,8 @@
   border-radius: 5px;
   transition: all 0.3s ease;
   color: black;
+  border: 2px solid #deb887;
+  border-radius: 8px;
 }
 
 .category-item:hover {
@@ -125,8 +129,10 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 20px;
-  background: #f8f8f8;
+  background: #F5E6D3;
   border-radius: 8px;
+  
+
 }
 
 .search-section {
@@ -163,6 +169,7 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  background-color: #8B4513;
 }
 
 /* Product List Styles */

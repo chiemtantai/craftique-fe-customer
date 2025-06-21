@@ -75,7 +75,6 @@ function ProductPage() {
             </div>
 
             <div className="sort-section">
-              <label htmlFor="sort-select">Sắp xếp:</label>
               <select 
                 id="sort-select"
                 value={sortBy} 

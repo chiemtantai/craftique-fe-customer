@@ -10,17 +10,16 @@ const WorkshopPage = () => {
         <div className="workshop-info">
           <div className="workshop-images">
             <div className="workshop-image">
-              <img src="/api/placeholder/200/150" alt="Hình ảnh Workshop 1" />
-              <p className="image-caption">Hình ảnh Workshop</p>
+              <img src="https://file.hstatic.net/1000382508/file/087122660230549_1593082397853331513_n_0f5c8632368044618d2a9e5eb7c1d8a6_grande.jpg" alt="Hình ảnh Workshop 1" />
             </div>
             <div className="workshop-image">
-              <img src="/api/placeholder/200/150" alt="Hình ảnh Workshop 2" />
+              <img src="https://file.hstatic.net/1000382508/file/087122730230542_2165593676557436854_n_d6210fba3dbc4d928e86e2d570df3b37_grande.jpg" alt="Hình ảnh Workshop 2" />
             </div>
             <div className="workshop-image">
-              <img src="/api/placeholder/200/150" alt="Hình ảnh Workshop 3" />
+              <img src="https://file.hstatic.net/1000382508/file/087122306897251_8183820834757168670_n_a256b047f2a34f25988e6b1d2a2483bb_grande.jpg" alt="Hình ảnh Workshop 3" />
             </div>
             <div className="workshop-image">
-              <img src="/api/placeholder/200/150" alt="Hình ảnh Workshop 4" />
+              <img src="https://file.hstatic.net/1000382508/file/087122283563920_7094128122954161960_n_f1884a1261f14837972e1449b21b697b_grande.jpg" alt="Hình ảnh Workshop 4" />
             </div>
           </div>
           
@@ -44,7 +43,7 @@ const WorkshopPage = () => {
             </div>
             
             <div className="contact-info-section">
-              <p><span className="label">Hotline:</span> <span className="hotline">0935736298</span> | <span className="label">Mail:</span> <a href="mailto:Craftique0201@gmail.com.vn" className="email">Craftique0201@gmail.com.vn</a></p>
+              <p><span className="label">Hotline:</span> <span className="hotline">0935736298</span> | <span className="label">Mail:</span> <a href="mailto:craftique68@gmail.com.vn" className="email">Craftique68@gmail.com.vn</a></p>
               <p><span className="label">Fanpage:</span> <a href="#" className="link">craftique.studio</a> | <a href="#" className="link">craftique</a></p>
               <p><span className="label">Social Network:</span> <a href="#" className="link">Instagram</a> | <a href="#" className="link">Facebook</a></p>
               <p><span className="label">Bảng giá workshop:</span> <a href="#" className="price-link">Bảng giá</a></p>

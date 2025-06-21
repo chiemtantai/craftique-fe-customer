@@ -38,28 +38,28 @@ function AboutPage() {
         <div className="gallery-grid">
           <div className="gallery-item">
             <img 
-              src="https://via.placeholder.com/300x300?text=Heart+Pattern+Ceramics" 
+              src="https://file.hstatic.net/1000382508/file/59596310189_1011234648089407772_n__1__7a4dad7247944eeb80c73d954b6f4e52_grande.jpg" 
               alt="Heart pattern ceramic collection"
             />
           </div>
           
           <div className="gallery-item">
             <img 
-              src="https://via.placeholder.com/300x300?text=Colorful+Bowl+Collection" 
+              src="https://file.hstatic.net/1000382508/file/059659646310184_1208375329163644622_n_9964065dbd6f4cb584ac258ef7188568_grande.jpg" 
               alt="Colorful ceramic bowls"
             />
           </div>
           
           <div className="gallery-item">
             <img 
-              src="https://via.placeholder.com/300x300?text=Pineapple+Teapot+Set" 
+              src="https://file.hstatic.net/1000382508/file/59532976862_9089999697914508310_n__1__e3245d397ba34caaad4f226bda393f12_grande.jpg" 
               alt="Pineapple shaped teapot and cups"
             />
           </div>
           
           <div className="gallery-item">
             <img 
-              src="https://via.placeholder.com/300x300?text=Geometric+Mugs" 
+              src="https://file.hstatic.net/1000382508/file/059664212976394_7865611530544305488_n_06cd96a709324df681e11065a8ea92f5_grande.jpg" 
               alt="Geometric design mugs"
             />
           </div>

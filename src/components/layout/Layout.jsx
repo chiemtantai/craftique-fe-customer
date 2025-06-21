@@ -58,7 +58,6 @@ function Layout({ children }) {
         const cartItems = JSON.parse(savedCart);
         const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
         setCartItemCount(totalCount);
-        console.log('Cart count updated:', totalCount); // Debug log
       } else {
         setCartItemCount(0);
       }
@@ -101,7 +100,6 @@ function Layout({ children }) {
                            currentUser.userID ||
                            'User';
         setUserName(displayName);
-        console.log('User đã đăng nhập:', displayName);
       } else {
         setUserName('');
       }

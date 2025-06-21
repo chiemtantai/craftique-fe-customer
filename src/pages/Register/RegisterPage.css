@@ -1,36 +1,14 @@
-/* LoginPage.css */
-.error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  border: 1px solid #ef5350;
-  font-size: 14px;
-  text-align: center;
-}
-
-.login-button:disabled,
-.google-login-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.login-input:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-}
-
-.login-container {
+/* RegisterPage.css */
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
+  padding: 20px 0;
 }
 
-.login-card {
+.register-card {
   width: 100%;
   max-width: 420px;
   padding: 30px;
@@ -53,7 +31,7 @@
   margin: 0;
 }
 
-.login-title {
+.register-title {
   font-size: 24px;
   font-weight: bold;
   color: #333;
@@ -61,7 +39,7 @@
   text-align: left;
 }
 
-.login-form {
+.register-form {
   display: flex;
   flex-direction: column;
 }
@@ -70,7 +48,7 @@
   margin-bottom: 15px;
 }
 
-.login-input {
+.register-input {
   width: 100%;
   padding: 12px 15px;
   border: 1px solid #ddd;
@@ -79,14 +57,26 @@
   font-size: 16px;
   color: black;
   box-sizing: border-box;
+  transition: border-color 0.3s;
 }
 
-.login-input:focus {
+.register-input:focus {
   outline: none;
   border-color: #ffcc80;
 }
 
-.login-button {
+.register-input.error {
+  border-color: #e57373;
+  background-color: #ffebee;
+}
+
+.register-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.register-button {
   width: 100%;
   padding: 12px 15px;
   background-color: #ffcc80;
@@ -101,8 +91,44 @@
   box-sizing: border-box;
 }
 
-.login-button:hover:not(:disabled) {
+.register-button:hover:not(:disabled) {
   background-color: #ffa726;
+}
+
+.register-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Messages */
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #ef5350;
+  font-size: 14px;
+  text-align: center;
+}
+
+.success-message {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #4caf50;
+  font-size: 14px;
+  text-align: center;
+}
+
+.field-error {
+  color: #c62828;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
 /* Divider */
@@ -131,8 +157,8 @@
   z-index: 1;
 }
 
-/* Google Login Button */
-.google-login-button {
+/* Google Register Button */
+.google-register-button {
   width: 100%;
   padding: 12px 15px;
   background-color: white;
@@ -151,10 +177,16 @@
   box-sizing: border-box;
 }
 
-.google-login-button:hover:not(:disabled) {
+.google-register-button:hover:not(:disabled) {
   background-color: #f8f9fa;
   border-color: #dadce0;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.google-register-button:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .google-icon {
@@ -168,38 +200,10 @@
   height: 20px;
 }
 
-.forgot-password {
-  text-align: right;
-}
-
-.forgot-password a {
-  color: #0066cc;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.forgot-password a:hover {
-  text-decoration: underline;
-}
-
-/* For mobile devices */
-@media (max-width: 480px) {
-  .login-card {
-    width: 90%;
-    padding: 20px;
-  }
-  
-  .login-input,
-  .login-button,
-  .google-login-button {
-    padding: 14px 15px;
-    font-size: 16px;
-  }
-}
-
-.register-link {
+/* Login Link */
+.login-link {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 14px;
   color: #666;
 }
@@ -217,4 +221,45 @@
 
 .link-button:hover {
   text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .register-container {
+    padding: 10px;
+  }
+  
+  .register-card {
+    width: 90%;
+    padding: 20px;
+    margin: 0 auto;
+  }
+  
+  .register-input,
+  .register-button,
+  .google-register-button {
+    padding: 14px 15px;
+    font-size: 16px;
+  }
+  
+  .register-title {
+    font-size: 22px;
+  }
+  
+  .brand-name {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 360px) {
+  .register-card {
+    padding: 15px;
+  }
+  
+  .register-input,
+  .register-button,
+  .google-register-button {
+    padding: 12px;
+    font-size: 15px;
+  }
 }

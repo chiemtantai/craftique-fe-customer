@@ -172,11 +172,6 @@ const accountService = {
     const userData = localStorage.getItem("userData");
     return userData ? JSON.parse(userData) : null;
   },
-
-  hasCustomerAccess: () => {
-    const userData = accountService.getCurrentUser();
-    return userData?.userName === "customer";
-  },
 };
 
 export default accountService;
