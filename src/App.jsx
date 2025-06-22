@@ -6,6 +6,7 @@ import LoginPage from './pages/Login/LoginPage.jsx';
 import RegisterPage from './pages/Register/RegisterPage.jsx';
 import AboutPage from './pages/About/AboutPage.jsx';
 import WorkshopPage from './pages/Workshop/WorkshopPage.jsx';
+import WorkshopRegisterPage from './pages/Workshop/Register/WorkshopRegisterPage.jsx';
 import ProductPage from './pages/Product/ProductPage.jsx';
 import BlogPage from './pages/Blog/BlogPage.jsx';
 import BlogDetailPage from './pages/BlogDetail/BlogDetailPage.jsx';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/home" element={<Layout><HomePage /></Layout>} />
         <Route path="/about" element={<Layout><AboutPage /></Layout>} />
         <Route path="/workshop" element={<Layout><WorkshopPage /></Layout>} />
+        <Route path="/workshop/register" element={<Layout><WorkshopRegisterPage /></Layout>} />
         <Route path="/products" element={<Layout><ProductPage /></Layout>} />
         <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
         <Route path="/blog/:blogID" element={<Layout><BlogDetailPage /></Layout>} />
