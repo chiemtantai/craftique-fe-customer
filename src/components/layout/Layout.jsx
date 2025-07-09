@@ -181,115 +181,83 @@ function Layout({ children }) {
   return (
     <div className="container">
       {/* Header */}
-      <header className="header">
-        <div className="contact-info">
-          <span>📞0987654321</span>
-          <span>📧craftique68@gmail.com</span>
-        </div>
-        <div className="logo-container">
-          <h1 onClick={() => handleNavClick('/')}>Craftique</h1>
-        </div>
-        <div className="search-cart">
-          <button className="cart-button" onClick={handleCartClick}>
-            <i className="cart-icon">🛒</i>
-            {cartItemCount > 0 && (
-              <span className="cart-badge">{cartItemCount}</span>
-            )}
-          </button>
-          
-          {/* Hiển thị khác nhau dựa trên trạng thái đăng nhập */}
-          {isLoading ? (
-            <div className="loading-section">
-              <span>Đang tải...</span>
-            </div>
-          ) : isLoggedIn ? (
-            <div className="user-section" ref={dropdownRef}>
-              <div className="user-dropdown-container">
-                <span 
-                  className="username clickable" 
-                  title={userName}
-                  onClick={handleUserNameClick}
-                >
-                  {getDisplayUserName(userName)} ▼
-                </span>
-                
-                {showUserDropdown && (
-                  <div className="user-dropdown">
-                    <div className="dropdown-item" onClick={handleViewProfile}>
-                      <span className="dropdown-icon">👤</span>
-                      Thông tin tài khoản
-                    </div>
-                    <div className="dropdown-item" onClick={handleViewOrders}>
-                      <span className="dropdown-icon">📦</span>
-                      Xem đơn hàng
-                    </div>
-                    <div className="dropdown-divider"></div>
-                    <div className="dropdown-item logout" onClick={handleLogout}>
-                      <span className="dropdown-icon">🚪</span>
-                      Đăng xuất
-                    </div>
-                  </div>
-                )}
+      <nav className="navbar">
+  <div className="navbar-left" onClick={() => handleNavClick('/')}>
+    <div className="logo-circle">C</div>
+    <span className="logo-text">Craftique</span>
+  </div>
+
+  <div className="navbar-center">
+  <button onClick={() => handleNavClick('/home')} className={isActiveNav('/home') || isActiveNav('/') ? 'nav-link active' : 'nav-link'}>
+    Trang chủ
+  </button>
+  <button onClick={() => handleNavClick('/about')} className={isActiveNav('/about') ? 'nav-link active' : 'nav-link'}>
+    Giới thiệu
+  </button>
+  <button onClick={() => handleNavClick('/products')} className={isActiveNav('/products') ? 'nav-link active' : 'nav-link'}>
+    Sản phẩm
+  </button>
+  <button onClick={() => handleNavClick('/custom')} className={isActiveNav('/custom') ? 'nav-link active' : 'nav-link'}>
+    Custom
+  </button>
+  <button onClick={() => handleNavClick('/workshop')} className={isActiveNav('/workshop') ? 'nav-link active' : 'nav-link'}>
+    Workshop
+  </button>
+  <button onClick={() => handleNavClick('/blog')} className={isActiveNav('/blog') ? 'nav-link active' : 'nav-link'}>
+    Chuyện của gốm
+  </button>
+</div>
+
+
+  <div className="navbar-right">
+    <button className="cart-button" onClick={handleCartClick}>
+      <i className="cart-icon">🛒</i>
+      {cartItemCount > 0 && (
+        <span className="cart-badge">{cartItemCount}</span>
+      )}
+    </button>
+
+    {isLoading ? (
+      <div className="loading-section">
+        <span>Đang tải...</span>
+      </div>
+    ) : isLoggedIn ? (
+      <div className="user-section" ref={dropdownRef}>
+        <div className="user-dropdown-container">
+          <span
+            className="username clickable"
+            title={userName}
+            onClick={handleUserNameClick}
+          >
+            {getDisplayUserName(userName)} ▼
+          </span>
+
+          {showUserDropdown && (
+            <div className="user-dropdown">
+              <div className="dropdown-item" onClick={handleViewProfile}>
+                <span className="dropdown-icon">👤</span>
+                Thông tin tài khoản
+              </div>
+              <div className="dropdown-item" onClick={handleViewOrders}>
+                <span className="dropdown-icon">📦</span>
+                Xem đơn hàng
+              </div>
+              <div className="dropdown-divider"></div>
+              <div className="dropdown-item logout" onClick={handleLogout}>
+                <span className="dropdown-icon">🚪</span>
+                Đăng xuất
               </div>
             </div>
-          ) : (
-            <button className="login-nav-button" onClick={handleLoginClick}>
-              Đăng nhập
-            </button>
           )}
         </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="main-nav">
-        <ul>
-          <li>
-            <a 
-              href="#" 
-              onClick={() => handleNavClick('/home')} 
-              className={isActiveNav('/home') || isActiveNav('/') ? 'active' : ''}
-            >
-              Trang chủ
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              onClick={() => handleNavClick('/about')}
-              className={isActiveNav('/about') ? 'active' : ''}
-            >
-              Giới thiệu
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              onClick={() => handleNavClick('/products')}
-              className={isActiveNav('/products') ? 'active' : ''}
-            >
-              Sản phẩm
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              onClick={() => handleNavClick('/workshop')}
-              className={isActiveNav('/workshop') ? 'active' : ''}
-            >
-              Workshop
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              onClick={() => handleNavClick('/blog')}
-              className={isActiveNav('/blog') ? 'active' : ''}
-            >
-              Chuyện của gốm
-            </a>
-          </li>
-        </ul>
-      </nav>
+      </div>
+    ) : (
+     <button className="login-nav-button" onClick={handleLoginClick}>
+  👤 Đăng nhập
+    </button>
+    )}
+  </div>
+</nav>
 
       {/* Main Content - sẽ render các component con */}
       <main className="main-content">
