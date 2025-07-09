@@ -197,8 +197,11 @@ function Layout({ children }) {
   <button onClick={() => handleNavClick('/products')} className={isActiveNav('/products') ? 'nav-link active' : 'nav-link'}>
     Sản phẩm
   </button>
-  <button onClick={() => handleNavClick('/custom')} className={isActiveNav('/custom') ? 'nav-link active' : 'nav-link'}>
+  {/* <button onClick={() => handleNavClick('/custom')} className={isActiveNav('/custom') ? 'nav-link active' : 'nav-link'}>
     Custom
+  </button> */}
+  <button onClick={() => handleNavClick('/custom-product')} className={isActiveNav('/custom-product') ? 'nav-link active' : 'nav-link'}>
+    Custom Product
   </button>
   <button onClick={() => handleNavClick('/workshop')} className={isActiveNav('/workshop') ? 'nav-link active' : 'nav-link'}>
     Workshop
