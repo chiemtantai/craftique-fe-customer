@@ -165,6 +165,16 @@ function PurchaseOrderPage() {
   // Create order data
   const createOrderData = () => {
     const timestamp = Date.now();
+
+    // Loại bỏ id khỏi custom trước khi map
+    const sanitizedCartItems = cartItems.map(item => {
+      if (item.isCustom && item.customProductFileID) {
+        const { id, ...rest } = item;
+        return rest;
+      }
+      return item;
+    });
+
     return {
       userID: user.id || user.userID,
       orderDate: new Date().toISOString(),
@@ -173,14 +183,15 @@ function PurchaseOrderPage() {
       shippingMethodID: formData.shippingMethodID,
       total: calculateTotal(),
       voucherID: formData.voucherID || 0,
-      orderDetails: cartItems.map(item => {
+      orderDetails: sanitizedCartItems.map(item => {
         if (item.isCustom && item.customProductFileID) {
           return {
             customProductFileID: item.customProductFileID,
             quantity: item.quantity,
             price: item.price
           };
-        } else {
+        } else if (item.id) {
+          // Sản phẩm thường
           return {
             productItemID: item.id,
             quantity: item.quantity,
@@ -245,6 +256,9 @@ function PurchaseOrderPage() {
   // Handle order creation (for COD and other non-bank payments)
   const createOrder = async () => {
     try {
+      // Đặt log ở đây để xem dữ liệu cart trước khi gửi
+      console.log('cartItems:', cartItems);
+
       const orderData = createOrderData();
       console.log('Order data gửi lên:', orderData);
       
@@ -439,14 +453,20 @@ function PurchaseOrderPage() {
             {/* Order Items */}
             <div className="order-items">
               {cartItems.map(item => (
-                <div key={item.id} className="order-item">
+                <div key={item.id || item.customProductFileID} className="order-item">
                   <div className="item-image">
-                    <img 
-                      src={item.image || '/placeholder-image.jpg'} 
+                    <img
+                      src={
+                        item.imageUrl
+                          ? (item.imageUrl.startsWith('http') ? item.imageUrl : 'https://localhost:7218' + item.imageUrl)
+                          : '/placeholder-image.jpg'
+                      }
                       alt={item.name}
-                      onError={(e) => {
+                      onError={e => {
+                        e.target.onerror = null;
                         e.target.src = '/placeholder-image.jpg';
                       }}
+                      style={{ width: 48, height: 48, borderRadius: 8, background: '#f8f6f2', objectFit: 'cover' }}
                     />
                   </div>
                   <div className="item-info">
