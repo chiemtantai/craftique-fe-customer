@@ -142,7 +142,13 @@ function CartPage() {
               <div key={item.id} className="cart-item">
                 <div className="item-image">
                   <img
-                    src={item.image || "/placeholder-image.jpg"}
+                    src={
+                      item.imageUrl
+                        ? item.imageUrl.startsWith('http')
+                          ? item.imageUrl
+                          : 'https://localhost:7218' + item.imageUrl
+                        : '/placeholder-image.jpg'
+                    }
                     alt={item.name}
                     onError={(e) => {
                       e.target.src = "/placeholder-image.jpg";
@@ -153,6 +159,9 @@ function CartPage() {
                 <div className="item-details">
                   <h3 className="item-name">{item.name}</h3>
                   <p className="item-price">{formatPrice(item.price)}</p>
+                  {item.isCustom && item.customText && (
+                    <div className="item-custom">Yêu cầu: {item.customText}</div>
+                  )}
                 </div>
 
                 <div className="item-quantity">
