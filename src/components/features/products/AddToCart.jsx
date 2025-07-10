@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function AddToCart({ product, onCartUpdate }) {
+function AddToCart({ product, onCartUpdate, isCustom = false, customProductFileID }) {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -18,21 +18,30 @@ function AddToCart({ product, onCartUpdate }) {
       const savedCart = localStorage.getItem('cartItems');
       let cartItems = savedCart ? JSON.parse(savedCart) : [];
 
-      // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-      const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
-
-      if (existingItemIndex !== -1) {
-        // Nếu đã có, tăng số lượng
-        cartItems[existingItemIndex].quantity += quantity;
-      } else {
-        // Nếu chưa có, thêm mới
+      if (isCustom && customProductFileID) {
+        // Sản phẩm custom
         cartItems.push({
-          id: product.id,
+          isCustom: true,
+          customProductFileID,
           name: product.name,
           price: product.price,
           image: product.image,
-          quantity: quantity
+          quantity,
         });
+      } else {
+        // Sản phẩm thường
+        const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+        if (existingItemIndex !== -1) {
+          cartItems[existingItemIndex].quantity += quantity;
+        } else {
+          cartItems.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity,
+          });
+        }
       }
 
       // Lưu vào localStorage

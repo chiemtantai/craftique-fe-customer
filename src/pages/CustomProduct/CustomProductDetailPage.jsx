@@ -43,16 +43,17 @@ function CustomProductDetailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await customProductFileService.upload({
+      const uploadRes = await customProductFileService.upload({
         CustomProductID: product.customProductID,
         File: form.image,
         CustomText: form.idea,
         Quantity: form.quantity,
       });
-
-      // --- Logic thêm vào giỏ hàng giống sản phẩm thường ---
+      
+      const customProductFileID = uploadRes.data.customProductFileID; 
+   
       const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      // Kiểm tra đã có sản phẩm custom này (theo customProductID và customText) chưa
+     
       const existingIndex = cartItems.findIndex(
         item =>
           item.id === product.customProductID &&
@@ -66,14 +67,14 @@ function CustomProductDetailPage() {
       } else {
         // Nếu chưa có, thêm mới
         cartItems.push({
-          id: product.customProductID,
+          isCustom: true,
+          customProductFileID,
           name: product.customName,
           price: product.price,
           quantity: form.quantity,
           imageUrl: product.imageUrl,
-          isCustom: true,
           customText: form.idea,
-          // Có thể thêm customFileName nếu muốn show file đã upload
+          // KHÔNG có id!
         });
       }
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
