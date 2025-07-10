@@ -1,32 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './CustomProductPage.css';
 import { useNavigate } from 'react-router-dom';
-import { whiteProducts } from './whiteProducts';
 import { FaRegSmile, FaMagic } from 'react-icons/fa';
+import { customProductService } from '../../services/customProductService';
 
 function CustomProductPage() {
+  const [customProducts, setCustomProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handleCustomClick = (id) => {
-    navigate(`/custom-product/${id}`);
-  };
+  useEffect(() => {
+    customProductService.getAll()
+      .then(res => {
+        setCustomProducts(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setCustomProducts([]);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Đang tải dữ liệu...</div>;
+
+  const API_BASE_URL = "https://localhost:7218";
 
   return (
     <div className="custom-product-container">
-      <h1>Chọn sản phẩm nền trắng để custom</h1>
-      <p className="desc">
-        Lựa chọn mẫu chén, bát, đĩa trắng bên dưới để bắt đầu thiết kế sản phẩm gốm sứ theo ý tưởng riêng của bạn!
-      </p>
+      <h1>Danh sách sản phẩm custom</h1>
       <div className="white-product-list">
-        {whiteProducts.map(product => (
-          <div className="white-product-card" key={product.id}>
+        {customProducts.map(product => (
+          <div className="white-product-card" key={product.customProductID}>
             <div className="white-product-img-wrapper">
-              <img src={product.image} alt={product.name} className="white-product-img" />
+              <img
+                src={product.imageUrl ? API_BASE_URL + product.imageUrl : 'https://via.placeholder.com/120x120?text=No+Image'}
+                alt={product.customName}
+                className="white-product-img"
+              />
               <FaRegSmile className="white-product-icon" />
             </div>
-            <h3>{product.name}</h3>
-            <p>{product.desc}</p>
-            <button className="custom-btn" onClick={() => handleCustomClick(product.id)}>
+            <h3>{product.customName}</h3>
+            <p>{product.description}</p>
+            <div style={{color: '#b46b3d', fontWeight: 600, marginBottom: 8}}>
+              {product.price?.toLocaleString()}đ
+            </div>
+            <button
+              className="custom-btn"
+              onClick={() => navigate(`/custom-product/${product.customProductID}`)}
+            >
               <FaMagic style={{marginRight: 8, fontSize: '1.1em'}} /> Custom ngay
             </button>
           </div>

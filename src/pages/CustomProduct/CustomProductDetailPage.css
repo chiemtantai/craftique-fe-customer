@@ -92,7 +92,7 @@
 }
 
 .custom-detail-container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 40px auto;
   background: #fff8ec;
   border-radius: 20px;
@@ -101,28 +101,44 @@
   display: flex;
   gap: 40px;
   font-family: 'Montserrat', Arial, sans-serif;
+  /* Thêm dòng này để ảnh và form chia đều */
+  align-items: flex-start;
 }
 
 .custom-detail-left {
-  flex: 1;
+  flex: 1 1 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: 0 2px 12px rgba(180,107,61,0.08);
-  padding: 24px 12px;
-  min-width: 260px;
+  padding: 40px 24px 32px 24px;
+  min-width: 400px;
+  max-width: 520px;
+  margin-right: 32px;
 }
 
-.custom-detail-left img {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-  border-radius: 14px;
+.custom-image-wrapper {
+  width: 100%;
+  max-width: 440px;      /* tăng max-width nếu muốn ảnh lớn hơn */
+  aspect-ratio: 4/3;     /* hoặc 16/9 nếu muốn hình chữ nhật ngang hơn */
   background: #f8f6f2;
-  border: 1px solid #f3e3d3;
-  margin-bottom: 18px;
+  border-radius: 18px;
+  border: 1.5px solid #f3e3d3;
+  overflow: hidden;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.07);
+}
+
+.white-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* fill khối, không bị dư trắng */
+  display: block;
 }
 
 .custom-detail-left h2 {
@@ -328,8 +344,12 @@
 .custom-qty-box {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   margin-bottom: 18px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 24px;
+  border: 1.5px solid #e3d5c6;
 }
 
 .custom-qty-label {
@@ -339,11 +359,11 @@
 
 .custom-qty-btn {
   background: #fff;
-  border: 1.5px solid #e3d5c6;
+  border: 2px solid #b46b3d;
   color: #b46b3d;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  border-radius: 10px;
+  width: 44px;
+  height: 38px;
   font-size: 1.3rem;
   font-weight: 700;
   cursor: pointer;
@@ -361,8 +381,8 @@
 .custom-qty-value {
   min-width: 32px;
   text-align: center;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: #7b4a1b;
 }
 
@@ -385,4 +405,25 @@
 .custom-addcart-btn:hover {
   background: linear-gradient(90deg, #7b4a1b 0%, #b46b3d 100%);
   transform: translateY(-2px) scale(1.03);
+}
+
+.custom-upload-label-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-upload-label-area:active {
+  opacity: 0.95;
+}
+
+.custom-upload-file-info {
+  margin-top: 8px;
+  color: #b46b3d;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 500;
 }

@@ -173,17 +173,26 @@ function PurchaseOrderPage() {
       shippingMethodID: formData.shippingMethodID,
       total: calculateTotal(),
       voucherID: formData.voucherID || 0,
-      orderDetails: cartItems.map(item => ({
-        productItemID: item.id,
-        quantity: item.quantity,
-        price: item.price
-      })),
+      orderDetails: cartItems.map(item => {
+        if (item.isCustom && item.customProductFileID) {
+          return {
+            customProductFileID: item.customProductFileID,
+            quantity: item.quantity,
+            price: item.price
+          };
+        } else {
+          return {
+            productItemID: item.id,
+            quantity: item.quantity,
+            price: item.price
+          };
+        }
+      }),
       customerInfo: {
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone
       },
-      // Thêm unique identifier để tránh duplicate
       clientOrderId: `${user.id || user.userID}_${timestamp}_${Math.random().toString(36).substr(2, 9)}`
     };
   };
@@ -237,7 +246,7 @@ function PurchaseOrderPage() {
   const createOrder = async () => {
     try {
       const orderData = createOrderData();
-      console.log('Sending order data:', orderData);
+      console.log('Order data gửi lên:', orderData);
       
       const response = await orderService.create(orderData);
       

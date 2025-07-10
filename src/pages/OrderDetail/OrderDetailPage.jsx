@@ -176,138 +176,59 @@ const OrderDetailPage = () => {
       </div>
 
       {/* Order Information */}
-      <div className="order-detail-content">
-        <div className="order-info-section">
-          <h2>Thông tin đơn hàng</h2>
-          <div className="order-info-grid">
-            <div className="info-item">
-              <label>Mã đơn hàng:</label>
-              <span>#{order.orderID}</span>
-            </div>
-            <div className="info-item">
-              <label>Ngày đặt hàng:</label>
-              <span>{formatDate(order.orderDate)}</span>
-            </div>
-            <div className="info-item">
-              <label>Mã khách hàng:</label>
-              <span>{order.userID}</span>
-            </div>
-            <div className="info-item">
-              <label>Mã shipper:</label>
-              <span>{order.shipperID || 'Chưa phân công'}</span>
-            </div>
-            <div className="info-item">
-              <label>Địa chỉ giao hàng:</label>
-              <span>{order.address}</span>
-            </div>
-            <div className="info-item">
-              <label>Phương thức thanh toán:</label>
-              <span>{order.paymentMethod}</span>
-            </div>
-            <div className="info-item">
-              <label>Phương thức vận chuyển:</label>
-              <span>ID: {order.shippingMethodID}</span>
-            </div>
-            <div className="info-item">
-              <label>Mã voucher:</label>
-              <span>{order.voucherID || 'Không có'}</span>
-            </div>
-            <div className="info-item">
-              <label>Trạng thái:</label>
-              <span className={`status-badge ${getStatusClass(order.orderStatus)}`}>
-                {getStatusText(order.orderStatus)}
-              </span>
-            </div>
-            <div className="info-item">
-              <label>Tổng tiền:</label>
-              <span className="total-amount">{formatPrice(order.total)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Order Details */}
-        <div className="order-details-section">
-          <h2>Chi tiết sản phẩm</h2>
-          <div className="order-details-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Hình ảnh</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Mã sản phẩm</th>
-                  <th>Số lượng</th>
-                  <th>Đơn giá</th>
-                  <th>Thành tiền</th>
-                  <th>Tổng cộng</th>
-                </tr>
-              </thead>
-              <tbody>
-                {order.orderDetails && order.orderDetails.length > 0 ? (
-                  order.orderDetails.map((detail, index) => {
-                    const productItem = productItems[detail.productItemID];
-                    return (
-                      <tr key={detail.orderDetailID}>
-                        <td>{index + 1}</td>
-                        <td>
-                          {productItem?.image ? (
-                            <img 
-                              src={productItem.image} 
-                              alt={productItem.name || 'Product'}
-                              className="product-image"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                              }}
-                            />
-                          ) : (
-                            <div className="no-image">
-                              <span>Không có ảnh</span>
-                            </div>
-                          )}
-                        </td>
-                        <td className="product-name">
-                          {productItem?.name || 'Đang tải...'}
-                        </td>
-                        <td>{productItem?.sku || 'N/A'}</td>
-                        <td>#{detail.productItemID}</td>
-                        <td className="quantity">{detail.quantity}</td>
-                        <td>{formatPrice(detail.price)}</td>
-                        <td className="subtotal">{formatPrice(detail.price * detail.quantity)}</td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="8" className="no-data">
-                      Không có chi tiết sản phẩm
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Order Summary */}
-        <div className="order-summary-section">
-          <div className="summary-content">
-            <div className="summary-row">
-              <span>Tổng số lượng:</span>
+      <div className="order-detail-modern">
+        <div className="order-detail-main">
+          {/* Thông tin đơn hàng */}
+          <div className="order-info-card">
+            <h2>Thông tin đơn hàng</h2>
+            <div className="info-row"><span>Mã đơn hàng:</span> <b>#{order.orderID}</b></div>
+            <div className="info-row"><span>Ngày đặt:</span> {formatDate(order.orderDate)}</div>
+            <div className="info-row"><span>Khách hàng:</span> {order.userID}</div>
+            <div className="info-row"><span>Địa chỉ:</span> {order.address}</div>
+            <div className="info-row"><span>Trạng thái:</span> <span className={`status-badge ${getStatusClass(order.orderStatus)}`}>{getStatusText(order.orderStatus)}</span></div>
+            <div className="info-row">
+              <span>Phương thức thanh toán:</span>
               <span>
-                {order.orderDetails ? 
-                  order.orderDetails.reduce((sum, detail) => sum + detail.quantity, 0) : 0
-                } sản phẩm
+                {order.paymentMethod === 'COD' && 'Thanh toán khi nhận hàng (COD)'}
+                {order.paymentMethod === 'BANK_TRANSFER' && 'Chuyển khoản ngân hàng'}
               </span>
             </div>
-            <div className="summary-row">
-              <span>Tổng số mặt hàng:</span>
-              <span>{order.orderDetails ? order.orderDetails.length : 0} mặt hàng</span>
-            </div>
-            <div className="summary-row total-row">
-              <span>Tổng tiền:</span>
-              <span className="total-amount">{formatPrice(order.total)}</span>
-            </div>
           </div>
+
+          {/* Danh sách sản phẩm */}
+          <div className="order-products-list">
+            <h2>Chi tiết sản phẩm</h2>
+            {order.orderDetails.map((detail, idx) => {
+              const product = productItems[detail.productItemID];
+              return (
+                <div className="product-card" key={detail.orderDetailID}>
+                  <div className="product-img-wrap">
+                    {product?.image ? (
+                      <img src={product.image} alt={product.name} />
+                    ) : (
+                      <div className="no-image">Không có ảnh</div>
+                    )}
+                  </div>
+                  <div className="product-info">
+                    <div className="product-name">{product?.name || 'Đang tải...'}</div>
+                    <div className="product-sku">Mã: {product?.sku || 'N/A'}</div>
+                    <div className="product-qty">Số lượng: {detail.quantity}</div>
+                    <div className="product-price">Đơn giá: {formatPrice(detail.price)}</div>
+                    <div className="product-subtotal">Thành tiền: <b>{formatPrice(detail.price * detail.quantity)}</b></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Tóm tắt đơn hàng */}
+        <div className="order-summary-card">
+          <h2>Tóm tắt đơn hàng</h2>
+          <div className="summary-row"><span>Tổng số lượng:</span> <span>{order.orderDetails.reduce((sum, d) => sum + d.quantity, 0)}</span></div>
+          <div className="summary-row"><span>Tổng số mặt hàng:</span> <span>{order.orderDetails.length}</span></div>
+          <div className="summary-row total"><span>Tổng tiền:</span> <span className="total-amount">{formatPrice(order.total)}</span></div>
+          {/* Nếu có nút thao tác thì thêm ở đây */}
         </div>
       </div>
 

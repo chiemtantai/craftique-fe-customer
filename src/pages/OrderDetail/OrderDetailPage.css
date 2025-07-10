@@ -1,48 +1,36 @@
 /* Order Detail Page Styles */
 .order-detail-page {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #f8f9fa;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #fff8ec;
   min-height: 100vh;
+  padding: 32px 0 60px 0;
 }
 
-/* Header */
 .order-detail-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.08);
+  padding: 24px 32px;
   margin-bottom: 32px;
-  background: white;
-  padding: 20px 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
 }
 
 .header-left h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 600;
-  color: #1a1a1a;
+  color: #b46b3d;
+  font-size: 2em;
+  font-weight: 700;
 }
 
 .back-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
-  transition: all 0.3s ease;
+  background: #fff8ec;
+  color: #b46b3d;
+  border: 1.5px solid #e3d5c6;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
-
 .back-btn:hover {
-  transform: translateX(-2px);
+  background: #b46b3d;
+  color: #fff8ec;
 }
 
 .update-status-btn {
@@ -68,10 +56,11 @@
 
 /* Order Info Section */
 .order-info-section {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.08);
+  padding: 28px;
+  margin-bottom: 24px;
 }
 
 .order-info-section h2 {
@@ -102,32 +91,26 @@
 }
 
 .info-item label {
-  font-weight: 500;
-  color: #666;
-  flex: 0 0 180px;
+  color: #b46b3d;
+  font-weight: 600;
 }
-
 .info-item span {
-  color: #1a1a1a;
-  font-weight: 400;
-  text-align: center;
-  flex: 1;
+  color: #7b4a1b;
+  font-weight: 500;
 }
 
 .total-amount {
-  font-size: 18px;
-  font-weight: 700;
   color: #28a745 !important;
+  font-size: 1.15em;
+  font-weight: 700;
 }
 
 /* Status Badge */
 .status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
+  font-size: 0.95em;
+  border-radius: 8px;
+  padding: 6px 14px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .status-pending {
@@ -175,10 +158,11 @@
 
 /* Order Details Section */
 .order-details-section {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.08);
+  padding: 28px;
+  margin-bottom: 24px;
 }
 
 .order-details-section h2 {
@@ -209,10 +193,32 @@
 }
 
 .order-details-table th {
-  background-color: #f8f9fa;
-  font-weight: 600;
-  color: #495057;
-  border-top: 1px solid #e9ecef;
+  background: #fff8ec;
+  color: #b46b3d;
+  font-weight: 700;
+}
+.order-details-table td {
+  color: #7b4a1b;
+}
+.product-image {
+  border-radius: 10px;
+  background: #f8f6f2;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  box-shadow: 0 1px 4px rgba(180,107,61,0.04);
+}
+.no-image {
+  color: #bdbdbd;
+  font-style: italic;
+  font-size: 0.95em;
+  background: #f8f6f2;
+  border-radius: 10px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .order-details-table tr:hover {
@@ -234,10 +240,11 @@
 
 /* Order Summary Section */
 .order-summary-section {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.08);
+  padding: 28px;
+  margin-bottom: 24px;
 }
 
 .summary-content {
@@ -478,4 +485,139 @@
     background-color: #fee;
     color: #c53030;
   }
+}
+
+.order-detail-modern {
+  display: flex;
+  gap: 36px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 0 60px 0;
+}
+.order-detail-main {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.order-info-card, .order-summary-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.08);
+  padding: 28px;
+  margin-bottom: 0;
+}
+.order-info-card h2, .order-products-list h2, .order-summary-card h2 {
+  color: #b46b3d;
+  font-size: 1.25em;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 1em;
+}
+.status-badge {
+  font-size: 0.95em;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+}
+.order-products-list {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(180,107,61,0.08);
+  padding: 28px;
+}
+.product-card {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  border-bottom: 1.5px solid #f3e3d3;
+  padding: 18px 0;
+}
+.product-card:last-child {
+  border-bottom: none;
+}
+.product-img-wrap {
+  width: 70px;
+  height: 70px;
+  background: #f8f6f2;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.no-image {
+  color: #bdbdbd;
+  font-style: italic;
+  font-size: 0.95em;
+}
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.product-name {
+  color: #b46b3d;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.product-sku, .product-qty, .product-price {
+  color: #7b4a1b;
+  font-size: 0.98em;
+}
+.product-subtotal {
+  color: #28a745;
+  font-weight: 700;
+  font-size: 1.05em;
+}
+.order-summary-card {
+  flex: 1;
+  min-width: 320px;
+  align-self: flex-start;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 1em;
+  color: #7b4a1b;
+}
+.summary-row.total {
+  color: #b46b3d;
+  font-size: 1.15em;
+  font-weight: 700;
+  margin-top: 18px;
+}
+.total-amount {
+  color: #28a745 !important;
+  font-size: 1.15em;
+  font-weight: 700;
+}
+.main-action-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #b46b3d 0%, #a86a3d 100%);
+  color: #fff8ec;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 20px;
+}
+.main-action-btn:hover {
+  background: linear-gradient(90deg, #7b4a1b 0%, #b46b3d 100%);
 }
