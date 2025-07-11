@@ -37,7 +37,6 @@ function CustomProductPage() {
                 alt={product.customName}
                 className="white-product-img"
               />
-              <FaRegSmile className="white-product-icon" />
             </div>
             <h3>{product.customName}</h3>
             <p>{product.description}</p>
