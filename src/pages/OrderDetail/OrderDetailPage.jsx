@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { orderService } from '../../services/orderService';
 import { productItemService } from '../../services/productItemService';
-import { Button } from '../../components/ui/button/Button'
-import UpdateOrderStatus from '../../components/features/orders/UpdateOrderStatus'
+import { customProductService } from '../../services/customProductService';
+import { Button } from '../../components/ui/button/Button';
+import UpdateOrderStatus from '../../components/features/orders/UpdateOrderStatus';
 import './OrderDetailPage.css';
 
 const OrderDetailPage = () => {
@@ -26,13 +27,11 @@ const OrderDetailPage = () => {
       setLoading(true);
       const response = await orderService.getById(orderID);
       const orderData = response.data;
+      console.log('orderData:', orderData); // Thêm dòng này
       setOrder(orderData);
-      
-      // Fetch product item details for each order detail
       if (orderData.orderDetails && orderData.orderDetails.length > 0) {
         await fetchProductItems(orderData.orderDetails);
       }
-      
       setError(null);
     } catch (err) {
       setError('Không thể tải chi tiết đơn hàng');
@@ -45,22 +44,35 @@ const OrderDetailPage = () => {
   const fetchProductItems = async (orderDetails) => {
     try {
       const productItemsData = {};
-      
-      // Fetch all product items concurrently
+
       const fetchPromises = orderDetails.map(async (detail) => {
-        try {
-          const response = await productItemService.getById(detail.productItemID);
-          productItemsData[detail.productItemID] = response.data;
-        } catch (error) {
-          console.error(`Error fetching product item ${detail.productItemID}:`, error);
-          // Set fallback data if fetch fails
-          productItemsData[detail.productItemID] = {
-            productItemID: detail.productItemID,
-            productName: 'Không thể tải thông tin sản phẩm',
-            sku: 'N/A',
-            image: null,
-            price: detail.price
-          };
+        // Sản phẩm thường
+        if (detail.productItemID && detail.productItemID !== 0) {
+          try {
+            const response = await productItemService.getById(detail.productItemID);
+            productItemsData[`item-${detail.productItemID}`] = response.data;
+          } catch (error) {
+            productItemsData[`item-${detail.productItemID}`] = {
+              productName: 'Không thể tải thông tin sản phẩm',
+              sku: 'N/A',
+              image: null,
+              price: detail.price
+            };
+          }
+        }
+        // Sản phẩm custom
+        if (detail.customProductFileID) {
+          try {
+            const response = await customProductService.getById(detail.customProductFileID);
+            productItemsData[`custom-${detail.customProductFileID}`] = response.data;
+          } catch (error) {
+            productItemsData[`custom-${detail.customProductFileID}`] = {
+              productName: 'Không thể tải thông tin sản phẩm custom',
+              sku: 'N/A',
+              image: null,
+              price: detail.price
+            };
+          }
         }
       });
 
@@ -71,7 +83,6 @@ const OrderDetailPage = () => {
     }
   };
 
-  // Format giá tiền
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -79,12 +90,10 @@ const OrderDetailPage = () => {
     }).format(price);
   };
 
-  // Format ngày tháng
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN');
   };
 
-  // Lấy class CSS cho trạng thái
   const getStatusClass = (status) => {
     switch (status) {
       case 'Pending': return 'status-pending';
@@ -99,7 +108,6 @@ const OrderDetailPage = () => {
     }
   };
 
-  // Lấy text hiển thị cho trạng thái
   const getStatusText = (status) => {
     switch (status) {
       case 'Pending': return 'Chờ xử lý';
@@ -119,7 +127,7 @@ const OrderDetailPage = () => {
   };
 
   const handleStatusUpdated = () => {
-    fetchOrderDetail(); // Reload chi tiết đơn hàng
+    fetchOrderDetail();
     setShowUpdateModal(false);
   };
 
@@ -156,82 +164,75 @@ const OrderDetailPage = () => {
     );
   }
 
+  // Tổng số lượng sản phẩm
+  const totalQuantity = order.orderDetails.reduce((sum, d) => sum + d.quantity, 0);
+
   return (
-    <div className="order-detail-page">
-      {/* Header */}
-      <div className="order-detail-header">
-        <div className="header-left">
+    <div className="order-detail-modern">
+      <div className="order-detail-main">
+        {/* Header */}
+        <div className="order-detail-header">
           <Button variant="outline" onClick={handleGoBack} className="back-btn">
             ← Quay lại
           </Button>
-          <h1>Chi tiết đơn hàng #{order.orderID}</h1>
+          <div>
+            <h1>Chi tiết đơn hàng #{order.orderID}</h1>
+            <div className="order-detail-desc">Quản lý thông tin đơn hàng chi tiết</div>
+          </div>
         </div>
-        <div className="header-right">
-          {orderService.getAvailableStatuses(order.orderStatus).length > 0 && (
-            <Button onClick={handleUpdateStatus} className="update-status-btn">
-              Cập nhật trạng thái
-            </Button>
-          )}
+        {/* Thông tin đơn hàng */}
+        <div className="order-info-card">
+          <h2>Thông tin đơn hàng</h2>
+          <div className="info-row"><span>Mã đơn hàng:</span> <b>#{order.orderID}</b></div>
+          <div className="info-row"><span>Địa chỉ:</span> {order.address}</div>
+          <div className="info-row"><span>Ngày đặt:</span> <b>{formatDate(order.orderDate)}</b></div>
+          <div className="info-row"><span>Trạng thái:</span> <span className={`status-badge ${getStatusClass(order.orderStatus)}`}>{getStatusText(order.orderStatus)}</span></div>
+          <div className="info-row"><span>Khách hàng:</span> <b>{order.userID}</b></div>
+          <div className="info-row"><span>Thanh toán:</span> <span>{order.paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản ngân hàng'}</span></div>
+        </div>
+        {/* Chi tiết sản phẩm */}
+        <div className="order-products-list">
+          <h2>Chi tiết sản phẩm</h2>
+          {order.orderDetails.map((detail, idx) => {
+            const keys = [];
+            if (detail.productItemID && detail.productItemID !== 0) keys.push(`item-${detail.productItemID}`);
+            if (detail.customProductFileID) keys.push(`custom-${detail.customProductFileID}`);
+            const product = productItems[keys[0]]; // Ưu tiên productItem, nếu không có thì custom
+            return (
+              <div className="product-card" key={detail.orderDetailID}>
+                <div className="product-img-wrap">
+                  {product?.image ? (
+                    <img src={product.image} alt={product.name} />
+                  ) : (
+                    <div className="no-image">Không có ảnh</div>
+                  )}
+                </div>
+                <div className="product-info">
+                  <div className="product-name">{product?.name || 'Đang tải...'}</div>
+                  <div className="product-sku">Mã: {product?.sku || 'N/A'}</div>
+                  <div className="product-qty">Số lượng: {detail.quantity}</div>
+                  <div className="product-price">Đơn giá: {formatPrice(detail.price)}</div>
+                  <div className="product-subtotal">Thành tiền: <b>{formatPrice(detail.price * detail.quantity)}</b></div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
-
-      {/* Order Information */}
-      <div className="order-detail-modern">
-        <div className="order-detail-main">
-          {/* Thông tin đơn hàng */}
-          <div className="order-info-card">
-            <h2>Thông tin đơn hàng</h2>
-            <div className="info-row"><span>Mã đơn hàng:</span> <b>#{order.orderID}</b></div>
-            <div className="info-row"><span>Ngày đặt:</span> {formatDate(order.orderDate)}</div>
-            <div className="info-row"><span>Khách hàng:</span> {order.userID}</div>
-            <div className="info-row"><span>Địa chỉ:</span> {order.address}</div>
-            <div className="info-row"><span>Trạng thái:</span> <span className={`status-badge ${getStatusClass(order.orderStatus)}`}>{getStatusText(order.orderStatus)}</span></div>
-            <div className="info-row">
-              <span>Phương thức thanh toán:</span>
-              <span>
-                {order.paymentMethod === 'COD' && 'Thanh toán khi nhận hàng (COD)'}
-                {order.paymentMethod === 'BANK_TRANSFER' && 'Chuyển khoản ngân hàng'}
-              </span>
-            </div>
-          </div>
-
-          {/* Danh sách sản phẩm */}
-          <div className="order-products-list">
-            <h2>Chi tiết sản phẩm</h2>
-            {order.orderDetails.map((detail, idx) => {
-              const product = productItems[detail.productItemID];
-              return (
-                <div className="product-card" key={detail.orderDetailID}>
-                  <div className="product-img-wrap">
-                    {product?.image ? (
-                      <img src={product.image} alt={product.name} />
-                    ) : (
-                      <div className="no-image">Không có ảnh</div>
-                    )}
-                  </div>
-                  <div className="product-info">
-                    <div className="product-name">{product?.name || 'Đang tải...'}</div>
-                    <div className="product-sku">Mã: {product?.sku || 'N/A'}</div>
-                    <div className="product-qty">Số lượng: {detail.quantity}</div>
-                    <div className="product-price">Đơn giá: {formatPrice(detail.price)}</div>
-                    <div className="product-subtotal">Thành tiền: <b>{formatPrice(detail.price * detail.quantity)}</b></div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Tóm tắt đơn hàng */}
+      {/* Cột phải: Tóm tắt & thao tác nhanh */}
+      <div className="order-detail-side">
         <div className="order-summary-card">
           <h2>Tóm tắt đơn hàng</h2>
-          <div className="summary-row"><span>Tổng số lượng:</span> <span>{order.orderDetails.reduce((sum, d) => sum + d.quantity, 0)}</span></div>
+          <div className="summary-row"><span>Tổng số lượng:</span> <span>{totalQuantity}</span></div>
           <div className="summary-row"><span>Tổng số mặt hàng:</span> <span>{order.orderDetails.length}</span></div>
           <div className="summary-row total"><span>Tổng tiền:</span> <span className="total-amount">{formatPrice(order.total)}</span></div>
-          {/* Nếu có nút thao tác thì thêm ở đây */}
+        </div>
+        <div className="quick-actions-card">
+          <Button onClick={handleUpdateStatus} className="main-action-btn">
+            Cập nhật trạng thái
+          </Button>
         </div>
       </div>
-
       {/* Modal cập nhật trạng thái */}
       {showUpdateModal && (
         <UpdateOrderStatus
