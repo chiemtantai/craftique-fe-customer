@@ -4,7 +4,7 @@ import axios from "axios";
 const API_BASE_URL = 'https://api-craftique.innosphere.io.vn/api';
 
 const customProductAPI = axios.create({
-  baseURL: `${API_BASE_URL}/api/CustomProduct`,
+  baseURL: `${API_BASE_URL}/CustomProduct`,
   headers: {
     "Content-Type": "application/json",
   },

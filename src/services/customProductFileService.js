@@ -4,7 +4,7 @@ import axios from "axios";
 const API_BASE_URL = 'https://api-craftique.innosphere.io.vn/api';
 
 const customProductFileAPI = axios.create({
-  baseURL: `${API_BASE_URL}/api/CustomProductFile`,
+  baseURL: `${API_BASE_URL}/CustomProductFile`,
 });
 
 customProductFileAPI.interceptors.request.use(
