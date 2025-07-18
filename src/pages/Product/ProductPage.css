@@ -302,6 +302,7 @@
   border-radius: 8px;
   margin: 0 2px;
   background: #fff;
+  color: black;
 }
 
 .product-actions {
@@ -558,6 +559,7 @@
   border-radius: 8px;
   margin: 0 2px;
   background: #fff;
+  color: black;
 }
 .add-to-cart-btn {
   min-width: 170px;

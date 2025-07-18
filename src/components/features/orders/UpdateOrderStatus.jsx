@@ -59,9 +59,6 @@ const UpdateOrderStatus = ({ order, onClose, onStatusUpdated }) => {
       <div className="modal-content">
         <div className="modal-header">
           <h3>Cập nhật trạng thái đơn hàng #{order.orderID}</h3>
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
         </div>
 
         <div className="modal-body">
