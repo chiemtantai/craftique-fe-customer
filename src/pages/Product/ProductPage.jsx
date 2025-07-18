@@ -56,6 +56,7 @@ function ProductPage() {
           <CategoryList 
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
+            // Thêm className nếu CategoryList hỗ trợ
           />
         </aside>
 
@@ -71,7 +72,9 @@ function ProductPage() {
                 onChange={handleSearchChange}
                 className="search-input"
               />
-              <button className="search-btn">🔍</button>
+              <button className="search-btn" aria-label="Tìm kiếm">
+                <span role="img" aria-label="search">🔍</span>
+              </button>
             </div>
 
             <div className="sort-section">

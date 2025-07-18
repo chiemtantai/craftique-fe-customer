@@ -144,28 +144,15 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate, c
       
       <div className="products-grid">
         {products.map(product => (
-          <div key={product.productItemID} className="product-card">
-            <div className="product-image">
-              <ProductImg images={product.productImgs || []} />
-              {product.quantity <= 0 && (
-                <div className="out-of-stock">Hết hàng</div>
-              )}
+          <div key={product.productItemID} className="product-card minimal">
+            <div className="product-image minimal">
+              <ProductImg images={product.productImgs || []} height={180} borderRadius={12} objectFit="cover" />
             </div>
-            
-            <div className="product-info">
-              <h3 className="product-name">{product.name}</h3>
-              <p className="product-description">{product.description}</p>
-              
-              <div className="product-details">
-                <div className="product-price">
-                  {formatPrice(product.price)}
-                </div>
-                <div className="product-quantity">
-                  Còn lại: {product.quantity}
-                </div>
-              </div>
-              
-              <div className="product-actions">
+            <div className="product-info minimal">
+              <h3 className="product-name minimal">{product.name}</h3>
+              <div className="product-description minimal">{product.description ? product.description : ''}</div>
+              <div className="product-price minimal">{formatPrice(product.price)}</div>
+              <div className="product-actions minimal">
                 <AddToCart 
                   product={{
                     id: product.productItemID,

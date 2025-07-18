@@ -91,14 +91,14 @@ function AddToCart({ product, onCartUpdate, isCustom = false, customProductFileI
 
   return (
     <div className="add-to-cart-container">
-      <div className="quantity-selector">
+      <div className="quantity-selector compact">
         <label htmlFor="quantity">Số lượng:</label>
-        <div className="quantity-controls">
+        <div className="quantity-controls compact">
           <button 
             type="button" 
             onClick={handleQuantityDecrease}
             disabled={quantity <= 1}
-            className="quantity-btn"
+            className="quantity-btn compact"
           >
             -
           </button>
@@ -108,12 +108,12 @@ function AddToCart({ product, onCartUpdate, isCustom = false, customProductFileI
             value={quantity}
             onChange={handleQuantityChange}
             min="1"
-            className="quantity-input"
+            className="quantity-input compact"
           />
           <button 
             type="button" 
             onClick={handleQuantityIncrease}
-            className="quantity-btn"
+            className="quantity-btn compact"
           >
             +
           </button>
