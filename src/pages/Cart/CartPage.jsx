@@ -17,6 +17,7 @@ function CartPage() {
       const savedCart = localStorage.getItem("cartItems");
       if (savedCart) {
         const items = JSON.parse(savedCart);
+        console.log("Loaded cart items:", items); // Debug log
         setCartItems(items);
       } else {
         setCartItems([]);
@@ -84,6 +85,48 @@ function CartPage() {
     }).format(price);
   };
 
+  // Improved image URL handling - consistent with ProductImg component
+  const getImageUrl = (item) => {
+    // Debug log
+    console.log("Processing cart item:", item);
+    
+    // Try to get image from productImgs array first (like ProductImg component)
+    if (item.productImgs && item.productImgs.length > 0) {
+      const validImages = item.productImgs.filter(img => !img.isDeleted);
+      if (validImages.length > 0) {
+        console.log("Using productImgs imageUrl:", validImages[0].imageUrl);
+        return validImages[0].imageUrl;
+      }
+    }
+    
+    // Fallback to direct imageUrl property
+    if (item.imageUrl) {
+      console.log("Using direct imageUrl:", item.imageUrl);
+      return item.imageUrl;
+    }
+    
+    // Fallback to image property (from AddToCart)
+    if (item.image) {
+      console.log("Using image property:", item.image);
+      return item.image;
+    }
+    
+    console.log("No valid image found, using placeholder");
+    return getPlaceholderImage();
+  };
+
+  // Generate placeholder image using base64 SVG
+  const getPlaceholderImage = () => {
+    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f5f5f5' stroke='%23ddd' stroke-width='2'/%3E%3Cg fill='%23999' font-family='Arial, sans-serif' font-size='14' text-anchor='middle'%3E%3Ctext x='100' y='90'%3EKhông có%3C/text%3E%3Ctext x='100' y='110'%3Ehình ảnh%3C/text%3E%3C/g%3E%3C/svg%3E";
+  };
+
+  // Handle image loading errors - consistent with ProductImg component
+  const handleImageError = (e, itemName) => {
+    console.error(`Image load error for ${itemName}:`, e.target.src);
+    e.target.src = '/placeholder-image.jpg'; // Use same fallback as ProductImg
+    e.target.onerror = null; // Prevent infinite loop
+  };
+
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       alert("Giỏ hàng của bạn đang trống!");
@@ -142,16 +185,14 @@ function CartPage() {
               <div key={item.id} className="cart-item">
                 <div className="item-image">
                   <img
-                    src={
-                      item.imageUrl
-                        ? item.imageUrl.startsWith('http')
-                          ? item.imageUrl
-                          : 'https://localhost:7218' + item.imageUrl
-                        : '/placeholder-image.jpg'
-                    }
-                    alt={item.name}
-                    onError={(e) => {
-                      e.target.src = "/placeholder-image.jpg";
+                    src={getImageUrl(item)}
+                    alt={item.name || 'Sản phẩm'}
+                    onError={(e) => handleImageError(e, item.name)}
+                    onLoad={() => console.log(`Image loaded successfully for ${item.name}`)}
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                      objectFit: 'cover'
                     }}
                   />
                 </div>

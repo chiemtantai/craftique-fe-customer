@@ -112,6 +112,36 @@ function PurchaseOrderPage() {
     }
   };
 
+  // Helper function to get the best available image URL
+  const getImageUrl = (item) => {
+    // Check if item has productImgs array (from ProductItemList)
+    if (item.productImgs && item.productImgs.length > 0) {
+      const firstImage = item.productImgs[0];
+      if (firstImage.imageUrl) {
+        return firstImage.imageUrl.startsWith('http') 
+          ? firstImage.imageUrl 
+          : `https://localhost:7218${firstImage.imageUrl}`;
+      }
+    }
+    
+    // Check for direct imageUrl property
+    if (item.imageUrl) {
+      return item.imageUrl.startsWith('http') 
+        ? item.imageUrl 
+        : `https://localhost:7218${item.imageUrl}`;
+    }
+    
+    // Check for image property (fallback)
+    if (item.image) {
+      return item.image.startsWith('http') 
+        ? item.image 
+        : `https://localhost:7218${item.image}`;
+    }
+    
+    // Default placeholder
+    return '/placeholder-image.jpg';
+  };
+
   // Handle form changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -456,17 +486,19 @@ function PurchaseOrderPage() {
                 <div key={item.id || item.customProductFileID} className="order-item">
                   <div className="item-image">
                     <img
-                      src={
-                        item.imageUrl
-                          ? (item.imageUrl.startsWith('http') ? item.imageUrl : 'https://localhost:7218' + item.imageUrl)
-                          : '/placeholder-image.jpg'
-                      }
+                      src={getImageUrl(item)}
                       alt={item.name}
                       onError={e => {
                         e.target.onerror = null;
                         e.target.src = '/placeholder-image.jpg';
                       }}
-                      style={{ width: 48, height: 48, borderRadius: 8, background: '#f8f6f2', objectFit: 'cover' }}
+                      style={{ 
+                        width: 48, 
+                        height: 48, 
+                        borderRadius: 8, 
+                        background: '#f8f6f2', 
+                        objectFit: 'cover' 
+                      }}
                     />
                   </div>
                   <div className="item-info">

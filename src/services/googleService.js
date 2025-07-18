@@ -2,7 +2,8 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, provider } from "../firebaseConfig";
 import axios from "axios";
 
-const API_BASE_URL = "https://localhost:7218/api";
+// const API_BASE_URL = 'https://localhost:7218/api';
+const API_BASE_URL = 'https://api-craftique.innosphere.io.vn/api';
 
 const googleService = {
   // Đăng nhập bằng Google

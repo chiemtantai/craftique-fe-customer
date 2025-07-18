@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:7218/api';
+// const API_BASE_URL = 'https://localhost:7218/api';
+const API_BASE_URL = 'https://api-craftique.innosphere.io.vn/api';
 
 class PaymentService {
   // Tạo request thanh toán ngân hàng

@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { whiteProducts } from './whiteProducts'; // file data sản phẩm nền trắng
-import './CustomProductDetailPage.css';
-import { FaUpload, FaRegCommentDots, FaUser, FaPhone, FaPlus, FaMinus, FaShoppingCart, FaMagic } from 'react-icons/fa';
-import { customProductService } from '../../services/customProductService';
-import { customProductFileService } from '../../services/customProductFileService';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { whiteProducts } from "./whiteProducts"; // file data sản phẩm nền trắng
+import "./CustomProductDetailPage.css";
+import {
+  FaUpload,
+  FaRegCommentDots,
+  FaUser,
+  FaPhone,
+  FaPlus,
+  FaMinus,
+  FaShoppingCart,
+  FaMagic,
+} from "react-icons/fa";
+import { customProductService } from "../../services/customProductService";
+import { customProductFileService } from "../../services/customProductFileService";
 
 function CustomProductDetailPage() {
   const { id } = useParams();
@@ -12,31 +21,32 @@ function CustomProductDetailPage() {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    customProductService.getById(id)
-      .then(res => setProduct(res.data))
+    customProductService
+      .getById(id)
+      .then((res) => setProduct(res.data))
       .catch(() => setProduct(null));
   }, [id]);
 
   const [form, setForm] = useState({
-    idea: '',
+    idea: "",
     image: null,
     quantity: 1,
-    name: '',
-    phone: '',
+    name: "",
+    phone: "",
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value
+      [name]: files ? files[0] : value,
     }));
   };
 
   const handleQuantity = (delta) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      quantity: Math.max(1, prev.quantity + delta)
+      quantity: Math.max(1, prev.quantity + delta),
     }));
   };
 
@@ -49,13 +59,13 @@ function CustomProductDetailPage() {
         CustomText: form.idea,
         Quantity: form.quantity,
       });
-      
-      const customProductFileID = uploadRes.data.customProductFileID; 
-   
-      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-     
+
+      const customProductFileID = uploadRes.data.customProductFileID;
+
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
       const existingIndex = cartItems.findIndex(
-        item =>
+        (item) =>
           item.id === product.customProductID &&
           item.isCustom === true &&
           item.customText === form.idea
@@ -77,9 +87,9 @@ function CustomProductDetailPage() {
           // KHÔNG có id!
         });
       }
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
       // Dispatch event để các nơi khác cập nhật giỏ hàng
-      window.dispatchEvent(new Event('cartUpdated'));
+      window.dispatchEvent(new Event("cartUpdated"));
 
       alert("Gửi yêu cầu custom thành công và đã thêm vào giỏ hàng!");
       // Optionally: chuyển hướng sang trang giỏ hàng
@@ -91,7 +101,8 @@ function CustomProductDetailPage() {
 
   if (!product) return <div>Không tìm thấy sản phẩm!</div>;
 
-  const API_BASE_URL = "https://localhost:7218";
+  // const API_BASE_URL = 'https://localhost:7218';
+  const API_BASE_URL = "https://api-craftique.innosphere.io.vn";
   const totalPrice = (product.price || 0) * (form.quantity || 1);
 
   return (
@@ -99,7 +110,11 @@ function CustomProductDetailPage() {
       <div className="custom-detail-left">
         <div className="custom-image-wrapper">
           <img
-            src={product.imageUrl ? API_BASE_URL + product.imageUrl : 'https://via.placeholder.com/120x120?text=No+Image'}
+            src={
+              product.imageUrl
+                ? API_BASE_URL + product.imageUrl
+                : "https://via.placeholder.com/120x120?text=No+Image"
+            }
             alt={product.customName}
             className="white-product-img"
           />
@@ -108,14 +123,27 @@ function CustomProductDetailPage() {
       </div>
       <div className="custom-detail-right">
         <h1>{product.customName.toUpperCase()} IN THEO YÊU CẦU</h1>
-        <div className="custom-price">{product.price?.toLocaleString()}đ <span className="custom-price-note">Giá tuỳ chỉnh</span></div>
-        <div className="custom-note">Lưu ý: Giá có thể cập nhật tự động theo số lượng đặt hàng trong giỏ hàng.</div>
+        <div className="custom-price">
+          {product.price?.toLocaleString()}đ{" "}
+          <span className="custom-price-note">Giá tuỳ chỉnh</span>
+        </div>
+        <div className="custom-note">
+          Lưu ý: Giá có thể cập nhật tự động theo số lượng đặt hàng trong giỏ
+          hàng.
+        </div>
         <form className="custom-detail-form" onSubmit={handleSubmit}>
           {/* Upload box */}
           <div className="custom-upload-box">
-            <label htmlFor="custom-file-upload" className="custom-upload-label-area">
-              <div className="custom-upload-icon"><FaUpload /></div>
-              <span className="custom-upload-label">Thêm ảnh | logo | file, ...</span>
+            <label
+              htmlFor="custom-file-upload"
+              className="custom-upload-label-area"
+            >
+              <div className="custom-upload-icon">
+                <FaUpload />
+              </div>
+              <span className="custom-upload-label">
+                Thêm ảnh | logo | file, ...
+              </span>
               <div className="custom-upload-desc">
                 PNG, JPG, PDF, DOC (Max 5 files)
               </div>
@@ -146,8 +174,15 @@ function CustomProductDetailPage() {
 
           {/* Yêu cầu in ấn */}
           <div className="custom-request-box">
-            <span className="custom-request-label">Nhập yêu cầu in ấn của bạn:</span>
-            <textarea name="idea" placeholder="Nhập nội dung bạn muốn in trên sản phẩm, yêu cầu đặc biệt..." rows={3} onChange={handleChange} />
+            <span className="custom-request-label">
+              Nhập yêu cầu in ấn của bạn:
+            </span>
+            <textarea
+              name="idea"
+              placeholder="Nhập nội dung bạn muốn in trên sản phẩm, yêu cầu đặc biệt..."
+              rows={3}
+              onChange={handleChange}
+            />
             <div className="custom-request-desc">
               Mô tả chi tiết giúp chúng tôi thực hiện đúng yêu cầu của bạn
             </div>
@@ -156,18 +191,33 @@ function CustomProductDetailPage() {
           {/* Số lượng */}
           <div className="custom-qty-box">
             <span className="custom-qty-label">Số lượng:</span>
-            <button type="button" className="custom-qty-btn" onClick={() => handleQuantity(-1)}>-</button>
+            <button
+              type="button"
+              className="custom-qty-btn"
+              onClick={() => handleQuantity(-1)}
+            >
+              -
+            </button>
             <span className="custom-qty-value">{form.quantity}</span>
-            <button type="button" className="custom-qty-btn" onClick={() => handleQuantity(1)}>+</button>
+            <button
+              type="button"
+              className="custom-qty-btn"
+              onClick={() => handleQuantity(1)}
+            >
+              +
+            </button>
           </div>
 
           {/* Nút thêm vào giỏ hàng */}
           <button
             type="submit"
             className="custom-addcart-btn"
-            onClick={() => navigate(`/custom-product/${product.customProductID}`)}
+            onClick={() =>
+              navigate(`/custom-product/${product.customProductID}`)
+            }
           >
-            <FaShoppingCart style={{marginRight: 8}} /> Thêm vào giỏ hàng - {totalPrice.toLocaleString()}đ
+            <FaShoppingCart style={{ marginRight: 8 }} /> Thêm vào giỏ hàng -{" "}
+            {totalPrice.toLocaleString()}đ
           </button>
         </form>
       </div>

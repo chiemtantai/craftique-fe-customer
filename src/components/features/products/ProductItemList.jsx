@@ -74,12 +74,20 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate, c
   };
 
   const handleAddToCart = (product) => {
+    // Create cart product with complete image information
     const cartProduct = {
       id: product.productItemID,
       name: product.name,
       price: product.price,
+      quantity: 1,
+      // Include complete productImgs array for better image handling
+      productImgs: product.productImgs || [],
+      // Fallback properties for backward compatibility
+      imageUrl: product.productImgs?.[0]?.imageUrl || '/placeholder-image.jpg',
       image: product.productImgs?.[0]?.imageUrl || '/placeholder-image.jpg'
     };
+    
+    console.log('Adding to cart:', cartProduct); // Debug log
     
     if (onCartUpdate) {
       onCartUpdate(cartProduct);
@@ -163,6 +171,8 @@ function ProductItemList({ selectedCategory, searchTerm, sortBy, onCartUpdate, c
                     id: product.productItemID,
                     name: product.name,
                     price: product.price,
+                    productImgs: product.productImgs || [],
+                    imageUrl: product.productImgs?.[0]?.imageUrl || '/placeholder-image.jpg',
                     image: product.productImgs?.[0]?.imageUrl || '/placeholder-image.jpg'
                   }}
                   onCartUpdate={() => handleAddToCart(product)}

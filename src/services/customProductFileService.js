@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://localhost:7218"; // hoặc domain thật của bạn
+// const API_BASE_URL = 'https://localhost:7218/api';
+const API_BASE_URL = 'https://api-craftique.innosphere.io.vn/api';
 
 const customProductFileAPI = axios.create({
   baseURL: `${API_BASE_URL}/api/CustomProductFile`,
