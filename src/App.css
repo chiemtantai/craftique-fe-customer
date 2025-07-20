@@ -11,3 +11,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
 }
+body, .container, .main-content, .hero-section {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}

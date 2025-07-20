@@ -95,3 +95,34 @@
     height: 200px;
   }
 }
+
+.hero-btn {
+  background: #b46a36;
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px #0001;
+  margin-right: 16px;
+  cursor: pointer;
+}
+.hero-btn:hover {
+  background: #a05a2c;
+  color: #fff;
+}
+.hero-btn-outline {
+  background: #fff;
+  color: #b46a36;
+  border: 2px solid #b46a36;
+  box-shadow: none;
+}
+.hero-btn-outline:hover {
+  background: #fbeee6;
+  color: #a05a2c;
+}
