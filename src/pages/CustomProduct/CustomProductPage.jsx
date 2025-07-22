@@ -24,9 +24,6 @@ function CustomProductPage() {
 
   if (loading) return <div>Đang tải dữ liệu...</div>;
 
-  // const API_BASE_URL = 'https://localhost:7218';
-  const API_BASE_URL = "https://api-craftique.innosphere.io.vn";
-
   return (
     <div className="custom-product-container">
       <h1>Danh sách sản phẩm custom</h1>
@@ -37,7 +34,7 @@ function CustomProductPage() {
               <img
                 src={
                   product.imageUrl
-                    ? API_BASE_URL + product.imageUrl
+                    ? product.imageUrl
                     : "https://via.placeholder.com/120x120?text=No+Image"
                 }
                 alt={product.customName}

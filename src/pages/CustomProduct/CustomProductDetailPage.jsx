@@ -16,30 +16,66 @@ import { customProductService } from "../../services/customProductService";
 import { customProductFileService } from "../../services/customProductFileService";
 
 function CustomProductDetailPage() {
-  const { id } = useParams();
+  // Nhận cả id (productID) và customProductFileID từ URL
+  const { id, customProductFileID } = useParams();
   const navigate = useNavigate();
+
+  // State cho chế độ xem chi tiết đơn custom
+  const [customDetail, setCustomDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
 
+  // Nếu có customProductFileID: lấy chi tiết đơn custom
   useEffect(() => {
-    customProductService
-      .getById(id)
-      .then((res) => setProduct(res.data))
-      .catch(() => setProduct(null));
-  }, [id]);
+    if (customProductFileID) {
+      setLoading(true);
+      customProductFileService.getDetailById(customProductFileID)
+        .then(async (res) => {
+          const detail = res.data;
+          // Lấy thêm thông tin sản phẩm gốc
+          let productData = null;
+          try {
+            const productRes = await customProductService.getById(detail.productID || detail.customProductID);
+            productData = productRes.data;
+          } catch {
+            productData = null;
+          }
+          setCustomDetail({ ...detail, productData });
+          setLoading(false);
+        })
+        .catch(() => {
+          setCustomDetail(null);
+          setLoading(false);
+        });
+    } else if (id) {
+      // Nếu không có customProductFileID: lấy thông tin sản phẩm gốc như cũ
+      setLoading(true);
+      customProductService
+        .getById(id)
+        .then((res) => {
+          setProduct(res.data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setProduct(null);
+          setLoading(false);
+        });
+    }
+  }, [id, customProductFileID]);
 
   const [form, setForm] = useState({
     idea: "",
-    image: null,
+    imageUrl: "",
     quantity: 1,
     name: "",
     phone: "",
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      [name]: value,
     }));
   };
 
@@ -53,13 +89,13 @@ function CustomProductDetailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Gửi link ảnh thay vì upload file
       const uploadRes = await customProductFileService.upload({
         CustomProductID: product.customProductID,
-        File: form.image,
+        ImageUrl: form.imageUrl,
         CustomText: form.idea,
         Quantity: form.quantity,
       });
-
       const customProductFileID = uploadRes.data.customProductFileID;
 
       const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -84,6 +120,7 @@ function CustomProductDetailPage() {
           quantity: form.quantity,
           imageUrl: product.imageUrl,
           customText: form.idea,
+          customImageUrl: form.imageUrl,
           // KHÔNG có id!
         });
       }
@@ -99,25 +136,75 @@ function CustomProductDetailPage() {
     }
   };
 
+  // Nếu đang loading
+  if (loading) return <div>Đang tải dữ liệu...</div>;
+
+  // Nếu có customDetail: hiển thị chi tiết đơn custom
+  if (customDetail) {
+    const { fileUrl, customProductImageUrl, customProductName, customText, quantity, uploadedAt, productData } = customDetail;
+    return (
+      <div className="custom-detail-container">
+        <div className="custom-detail-left">
+          <div className="custom-image-wrapper">
+            {fileUrl ? (
+              <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                <img src={fileUrl} alt="Ảnh khách gửi" className="white-product-img" />
+              </a>
+            ) : (
+              <img src="https://via.placeholder.com/120x120?text=No+Image" alt="Ảnh khách gửi" className="white-product-img" />
+            )}
+          </div>
+          <h2>Ảnh khách gửi</h2>
+        </div>
+        <div className="custom-detail-right">
+          <h1>CHI TIẾT ĐƠN CUSTOM</h1>
+          <div className="custom-price">
+            {productData?.price?.toLocaleString() || ''}đ <span className="custom-price-note">Giá tuỳ chỉnh</span>
+          </div>
+          <div className="custom-note">
+            <b>Sản phẩm gốc:</b> {productData?.customName || customProductName || 'Không rõ'}
+            <div style={{ margin: '12px 0' }}>
+              {productData?.imageUrl || customProductImageUrl ? (
+                <img src={productData?.imageUrl || customProductImageUrl} alt="Sản phẩm gốc" style={{ maxWidth: 120, borderRadius: 8 }} />
+              ) : null}
+            </div>
+          </div>
+          <div className="custom-detail-info-box">
+            <div><b>Nội dung custom:</b> {customText || '(Không có)'}</div>
+            <div><b>Số lượng:</b> {quantity}</div>
+            <div><b>Ngày upload:</b> {uploadedAt ? new Date(uploadedAt).toLocaleString() : ''}</div>
+          </div>
+          <button className="custom-btn" onClick={() => navigate(-1)} style={{ marginTop: 16 }}>Quay lại</button>
+        </div>
+      </div>
+    );
+  }
+
+  // Nếu không có customDetail, hiển thị form đặt custom như cũ
   if (!product) return <div>Không tìm thấy sản phẩm!</div>;
 
-  // const API_BASE_URL = 'https://localhost:7218';
-  const API_BASE_URL = "https://api-craftique.innosphere.io.vn";
+
   const totalPrice = (product.price || 0) * (form.quantity || 1);
 
   return (
     <div className="custom-detail-container">
       <div className="custom-detail-left">
         <div className="custom-image-wrapper">
-          <img
-            src={
-              product.imageUrl
-                ? API_BASE_URL + product.imageUrl
-                : "https://via.placeholder.com/120x120?text=No+Image"
-            }
-            alt={product.customName}
-            className="white-product-img"
-          />
+          {product.imageUrl ? (
+            <a href={product.imageUrl} target="_blank" rel="noopener noreferrer">
+              <img
+                src={product.imageUrl}
+                alt={product.customName}
+                className="white-product-img"
+              />
+            </a>
+          ) : (
+            <img
+              src="https://via.placeholder.com/120x120?text=No+Image"
+              alt={product.customName}
+              className="white-product-img"
+            />
+          )}
         </div>
         <h2>{product.customName}</h2>
       </div>
@@ -128,46 +215,38 @@ function CustomProductDetailPage() {
           <span className="custom-price-note">Giá tuỳ chỉnh</span>
         </div>
         <div className="custom-note">
-          Lưu ý: Giá có thể cập nhật tự động theo số lượng đặt hàng trong giỏ
-          hàng.
+          Lưu ý: Giá có thể cập nhật tự động theo số lượng đặt hàng trong giỏ hàng.<br/>
+          Bạn có thể gửi ảnh lên 
+          <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: 500 }}>
+            https://postimages.org/
+          </a>
+          rồi upload link qua đây cho tụi mình nhé!
         </div>
         <form className="custom-detail-form" onSubmit={handleSubmit}>
           {/* Upload box */}
           <div className="custom-upload-box">
-            <label
-              htmlFor="custom-file-upload"
-              className="custom-upload-label-area"
-            >
+            <label className="custom-upload-label-area">
               <div className="custom-upload-icon">
                 <FaUpload />
               </div>
               <span className="custom-upload-label">
-                Thêm ảnh | logo | file, ...
+                Nhập link ảnh | logo (URL)
               </span>
               <div className="custom-upload-desc">
-                PNG, JPG, PDF, DOC (Max 5 files)
+                Dán đường dẫn ảnh (PNG, JPG, ...)
               </div>
               <input
-                id="custom-file-upload"
-                name="image"
-                type="file"
-                accept="image/*,.pdf,.doc"
-                style={{ display: "none" }}
+                name="imageUrl"
+                type="text"
+                placeholder="https://..."
+                value={form.imageUrl}
                 onChange={handleChange}
+                className="custom-upload-input"
               />
-              <button
-                type="button"
-                className="custom-upload-btn"
-                tabIndex={-1}
-                style={{ pointerEvents: "none" }}
-                disabled
-              >
-                Thêm
-              </button>
             </label>
-            {form.image && (
+            {form.imageUrl && (
               <div className="custom-upload-file-info">
-                Đã chọn: <span>{form.image.name}</span>
+                Đã nhập: <span>{form.imageUrl}</span>
               </div>
             )}
           </div>

@@ -20,7 +20,16 @@ customProductFileAPI.interceptors.request.use(
 
 export const customProductFileService = {
   upload: (data) => {
-    // data: { CustomProductID, File, CustomText, Quantity }
+    // Nếu có ImageUrl thì gửi JSON, không dùng FormData
+    if (data.ImageUrl) {
+      return customProductFileAPI.post("/upload", {
+        customProductID: data.CustomProductID,
+        imageUrl: data.ImageUrl,
+        customText: data.CustomText,
+        quantity: data.Quantity,
+      });
+    }
+    // Nếu upload file thì dùng FormData như cũ
     const formData = new FormData();
     formData.append("CustomProductID", data.CustomProductID);
     formData.append("File", data.File);
@@ -31,6 +40,7 @@ export const customProductFileService = {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
+  getDetailById: (id) => customProductFileAPI.get(`/detail/${id}`)
 };
 
 export default customProductFileService;

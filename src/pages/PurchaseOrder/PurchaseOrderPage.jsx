@@ -28,8 +28,6 @@ function PurchaseOrderPage() {
   const paymentMethods = [
     { value: 'COD', label: 'Thanh toán khi nhận hàng (COD)' },
     { value: 'Bank', label: 'Chuyển khoản ngân hàng' },
-    { value: 'Momo', label: 'Ví điện tử MoMo' },
-    { value: 'ZaloPay', label: 'Ví điện tử ZaloPay' }
   ];
 
   useEffect(() => {
@@ -118,26 +116,17 @@ function PurchaseOrderPage() {
     if (item.productImgs && item.productImgs.length > 0) {
       const firstImage = item.productImgs[0];
       if (firstImage.imageUrl) {
-        return firstImage.imageUrl.startsWith('http') 
-          ? firstImage.imageUrl 
-          : `https://localhost:7218${firstImage.imageUrl}`;
+        return firstImage.imageUrl;
       }
     }
-    
     // Check for direct imageUrl property
     if (item.imageUrl) {
-      return item.imageUrl.startsWith('http') 
-        ? item.imageUrl 
-        : `https://localhost:7218${item.imageUrl}`;
+      return item.imageUrl;
     }
-    
     // Check for image property (fallback)
     if (item.image) {
-      return item.image.startsWith('http') 
-        ? item.image 
-        : `https://localhost:7218${item.image}`;
+      return item.image;
     }
-    
     // Default placeholder
     return '/placeholder-image.jpg';
   };
@@ -206,7 +195,6 @@ function PurchaseOrderPage() {
     });
 
     return {
-      userID: user.id || user.userID,
       orderDate: new Date().toISOString(),
       address: formData.address,
       paymentMethod: formData.paymentMethod,
