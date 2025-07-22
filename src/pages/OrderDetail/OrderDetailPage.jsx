@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { orderService } from '../../services/orderService';
 import { productItemService } from '../../services/productItemService';
-import { customProductService } from '../../services/customProductService';
+import { customProductFileService } from '../../services/customProductFileService';
+
 import { Button } from '../../components/ui/button/Button';
 import UpdateOrderStatus from '../../components/features/orders/UpdateOrderStatus';
-import ProductImg from '../../components/features/products/ProductImg';
+
 import './OrderDetailPage.css';
 
 const OrderDetailPage = () => {
@@ -16,6 +17,9 @@ const OrderDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState('');
 
   // Định nghĩa các phương thức giao hàng (giống như trong PurchaseOrderPage)
   const shippingMethods = [
@@ -36,9 +40,6 @@ const OrderDetailPage = () => {
       const orderData = response.data;
       console.log('orderData:', orderData);
       setOrder(orderData);
-      if (orderData.orderDetails && orderData.orderDetails.length > 0) {
-        await fetchProductItems(orderData.orderDetails);
-      }
       setError(null);
     } catch (err) {
       setError('Không thể tải chi tiết đơn hàng');
@@ -79,17 +80,26 @@ const OrderDetailPage = () => {
         // Sản phẩm custom
         if (detail.customProductFileID) {
           try {
-            const response = await customProductService.getById(detail.customProductFileID);
-            const customProductData = response.data;
+            // Lấy thông tin file custom
+            const response = await customProductFileService.getDetailById(detail.customProductFileID);
+            const customFileData = response.data;
+
+            // Lấy thông tin sản phẩm gốc
+            const productRes = await customProductFileService.getDetailById(customFileData.productID || customFileData.customProductID);
+            const productData = productRes.data;
+
             productItemsData[`custom-${detail.customProductFileID}`] = {
-              name: customProductData.name || customProductData.productName || 'Sản phẩm custom',
-              sku: customProductData.sku || 'CUSTOM',
+              name: customFileData.customProductName || customFileData.customText || 'Sản phẩm custom',
+              sku: 'CUSTOM',
               price: detail.price,
-              productImgs: customProductData.productImgs || [],
-              imageUrl: customProductData.productImgs?.[0]?.imageUrl || customProductData.imageUrl || null
+              // Ảnh khách up lên
+              customImgs: customFileData.fileUrl ? [{ imageUrl: customFileData.fileUrl }] : [],
+              // Ảnh gốc
+              productImgs: productData.imageUrl ? [{ imageUrl: productData.imageUrl }] : [],
+              imageUrl: customFileData.fileUrl || null
             };
           } catch (error) {
-            console.error(`Error fetching custom product ${detail.customProductFileID}:`, error);
+            console.error(`Error fetching custom product file ${detail.customProductFileID}:`, error);
             productItemsData[`custom-${detail.customProductFileID}`] = {
               name: 'Không thể tải thông tin sản phẩm custom',
               sku: 'N/A',
@@ -254,36 +264,42 @@ const OrderDetailPage = () => {
         {/* Chi tiết sản phẩm */}
         <div className="order-products-list">
           <h2>Chi tiết sản phẩm</h2>
-          {order.orderDetails.map((detail) => {
-            const keys = [];
-            if (detail.productItemID && detail.productItemID !== 0) keys.push(`item-${detail.productItemID}`);
-            if (detail.customProductFileID) keys.push(`custom-${detail.customProductFileID}`);
-            const product = productItems[keys[0]];
-            
-            return (
-              <div className="product-card" key={detail.orderDetailID}>
-                <div className="product-img-wrap">
-                  {product ? (
-                    <ProductImg 
-                      images={product.productImgs || []} 
-                      height={120} 
-                      borderRadius={8} 
-                      objectFit="cover"
-                    />
-                  ) : (
-                    <div className="no-image">Đang tải...</div>
-                  )}
+          {order.orderDetails.map((detail) => (
+            <div className="product-card" key={detail.orderDetailID}>
+              <div style={{ display: 'flex', gap: 60, justifyContent: 'center', width: '100%' }}>
+                {/* Bên trái: Ảnh sản phẩm gốc */}
+                <div style={{ textAlign: 'center', flex: 1 }}>
+                  <div style={{ fontWeight: 600, color: '#b46b3d', marginBottom: 10 }}>Sản phẩm gốc</div>
+                  <img
+                    src={detail.customProductImageUrl || detail.product?.imageUrl || 'https://via.placeholder.com/120x120?text=No+Image'}
+                    alt={detail.customProductName || detail.product?.customName || detail.product?.productName || 'Sản phẩm gốc'}
+                    style={{ width: 210, height: 210, objectFit: 'cover', borderRadius: 18, background: '#faf7f4', marginBottom: 12 }}
+                  />
+                  <div style={{ fontWeight: 700, color: '#b46b3d', fontSize: '1.15em', marginTop: 8 }}>
+                    {detail.customProductName || detail.product?.customName || detail.product?.productName || 'Không có tên'}
+                  </div>
                 </div>
-                <div className="product-info">
-                  <div className="product-name">{product?.name || 'Đang tải...'}</div>
-                  <div className="product-sku">Mã: {product?.sku || 'N/A'}</div>
-                  <div className="product-qty">Số lượng: {detail.quantity}</div>
-                  <div className="product-price">Đơn giá: {formatPrice(detail.price)}</div>
-                  <div className="product-subtotal">Thành tiền: <b>{formatPrice(detail.price * detail.quantity)}</b></div>
+                {/* Bên phải: Ảnh khách in */}
+                <div style={{ textAlign: 'center', flex: 1 }}>
+                  <div style={{ fontWeight: 600, color: '#b46b3d', marginBottom: 10 }}>Ảnh bạn upload</div>
+                  <img
+                    src={detail.fileUrl || 'https://via.placeholder.com/120x120?text=No+Image'}
+                    alt="Ảnh khách in"
+                    style={{ width: 210, height: 210, objectFit: 'contain', borderRadius: 18, background: '#fff', cursor: 'pointer' }}
+                    onClick={() => {
+                      setModalImageUrl(detail.fileUrl);
+                      setShowImageModal(true);
+                    }}
+                  />
                 </div>
               </div>
-            );
-          })}
+              <div className="product-info" style={{ marginTop: 32, textAlign: 'center' }}>
+                <div className="product-qty">Số lượng: {detail.quantity}</div>
+                <div className="product-price">Đơn giá: {formatPrice(detail.price)}</div>
+                <div className="product-subtotal">Thành tiền: <b>{formatPrice(detail.price * detail.quantity)}</b></div>             
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       
@@ -326,6 +342,54 @@ const OrderDetailPage = () => {
           onClose={() => setShowUpdateModal(false)}
           onStatusUpdated={handleStatusUpdated}
         />
+      )}
+
+      {showImageModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0,0,0,0.4)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onClick={() => setShowImageModal(false)}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              padding: 24,
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              position: 'relative'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <img
+              src={modalImageUrl}
+              alt="Ảnh khách in lớn"
+              style={{ maxWidth: '80vw', maxHeight: '70vh', borderRadius: 12, marginBottom: 16 }}
+            />
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+              <button onClick={() => setShowImageModal(false)} style={{ fontSize: 18, color: '#666', background: 'none', border: 'none', cursor: 'pointer' }}>Đóng</button>
+              <a
+                href={modalImageUrl}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#2563eb', fontWeight: 600, textDecoration: 'none', fontSize: 16 }}
+              >
+                Tải về
+              </a>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
