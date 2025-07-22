@@ -1,5 +1,6 @@
 // src/components/FeaturedSections.jsx
 import { BookOpen, Info, ShoppingBag, Palette, Users } from "lucide-react"; // hoặc react-icons
+import { Link } from 'react-router-dom';
 
 const sections = [
   {
@@ -117,8 +118,8 @@ function FeaturedSections() {
                   {section.highlights.map((h, i) => <li key={i} style={{ marginBottom: 4, fontSize: 16, listStyle: "disc" }}>{h}</li>)}
                 </ul>
               </div>
-              <a
-                href={section.link}
+              <Link
+                to={section.link}
                 className="card-btn"
                 style={{
                   display: "inline-flex",
@@ -156,7 +157,7 @@ function FeaturedSections() {
                 <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 6 }}>
                   <path d="M5 12h8M11 8l4 4-4 4" />
                 </svg>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
