@@ -121,7 +121,7 @@ function RegisterPage() {
     <div className="register-container">
       <div className="register-card">
         <div className="logo-section" onClick={handleBackToHome}>
-          <h1 className="brand-name">Craftique</h1>
+          <div className="logo-circle">C</div>
         </div>
         
         <h2 className="register-title">Đăng Ký</h2>

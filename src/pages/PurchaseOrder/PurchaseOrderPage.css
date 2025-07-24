@@ -398,3 +398,82 @@
     font-size: 18px;
   }
 }
+
+@media (max-width: 600px) {
+  .purchase-order-page {
+    padding: 4px 0 20px 0;
+  }
+  .purchase-header {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+  .purchase-header h1 {
+    font-size: 1.1rem;
+  }
+  .purchase-content {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .order-form, .summary-card {
+    padding: 8px 4px;
+    border-radius: 8px;
+  }
+  .form-section h3, .summary-card h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+  }
+  .form-group label {
+    font-size: 0.98rem;
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    font-size: 0.98rem;
+    padding: 10px 6px;
+    border-radius: 6px;
+  }
+  .shipping-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px 4px;
+    border-radius: 6px;
+  }
+  .shipping-name {
+    font-size: 0.98rem;
+  }
+  .shipping-description, .shipping-price {
+    font-size: 0.95rem;
+  }
+  .submit-order-btn {
+    font-size: 1rem;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+  .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+  }
+  .item-image {
+    width: 40px;
+    height: 40px;
+    margin-right: 0;
+    border-radius: 6px;
+  }
+  .item-info {
+    margin-right: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 0.98rem;
+  }
+  .item-name {
+    font-size: 0.98rem;
+  }
+  .item-quantity, .item-price, .item-total {
+    font-size: 0.95rem;
+  }
+}

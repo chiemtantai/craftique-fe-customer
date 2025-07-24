@@ -1014,52 +1014,155 @@ body, .container {
   color: #fff8ec;
 }
 
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #fff8ec;
+  cursor: pointer;
+  margin-left: 10px;
+  z-index: 1001;
+}
+
 @media (max-width: 900px) {
   .navbar {
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    padding: 8px 6px;
+    position: relative;
+    border-radius: 10px;
+  }
+  .navbar-left {
+    flex: 0 0 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hamburger {
+    display: block;
+    margin-left: 8px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #fff8ec;
+    cursor: pointer;
+    z-index: 1001;
   }
   .navbar-center {
-    gap: 12px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #b46b3d;
+    flex-direction: column;
+    gap: 0;
+    display: none;
+    z-index: 1000;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 0;
   }
-  .logo-text {
-    font-size: 17px;
+  .navbar-center.show {
+    display: flex;
+  }
+  .navbar-right {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .cart-button, .login-nav-button, .user-section {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 4px 6px;
+    font-size: 1rem;
+    border-radius: 6px;
+    min-width: 0;
+    margin: 0;
+  }
+  .cart-button {
+    color: #fff8ec;
+    font-size: 1.3rem;
+    position: relative;
+  }
+  .cart-badge {
+    background: #dc143c;
+    color: #fff8ec;
+    font-size: 0.8rem;
+    width: 16px;
+    height: 16px;
+    top: -4px;
+    right: -4px;
+    border-radius: 50%;
+    border: 2px solid #b46b3d;
+  }
+  .user-section {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0 4px;
+    gap: 4px;
+    max-width: 90px;
+  }
+  .username {
+    background: transparent;
+    color: #fff8ec;
+    font-size: 1rem;
+    border: none;
+    padding: 0 2px;
+    max-width: 80px;
   }
 }
 
 @media (max-width: 600px) {
   .navbar {
-    flex-direction: column;
-    gap: 8px;
-    padding: 8px 2px;
+    padding: 6px 2px;
     border-radius: 8px;
   }
-  .navbar-center {
-    gap: 7px;
-  }
   .logo-circle {
-    width: 26px;
-    height: 26px;
-    font-size: 13px;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
   }
   .logo-text {
-    font-size: 14px;
-  }
-  .user-name, .username, .login-btn {
     font-size: 12px;
-    padding: 5px 8px;
   }
-  .cart-icon {
+  .navbar-center {
+    border-radius: 0 0 8px 8px;
+  }
+  .nav-link {
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
     font-size: 14px;
-    padding: 4px 7px;
+    border-radius: 0;
+    border-bottom: 1px solid #fff8ec22;
   }
-  .cart-count {
+  .nav-link:last-child {
+    border-bottom: none;
+  }
+  .cart-button, .login-nav-button, .user-section {
+    font-size: 0.95rem;
+    border-radius: 5px;
+    padding: 2px 4px;
+  }
+  .cart-badge {
     width: 13px;
     height: 13px;
-    font-size: 9px;
-    top: -5px;
-    right: -5px;
+    font-size: 0.7rem;
+    top: -3px;
+    right: -3px;
+  }
+  .username {
+    font-size: 0.95rem;
+    max-width: 60px;
+    padding: 0 1px;
   }
 }
 

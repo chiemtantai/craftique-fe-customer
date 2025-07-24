@@ -96,6 +96,35 @@
   }
 }
 
+@media (max-width: 600px) {
+  .product-section {
+    margin-bottom: 24px;
+  }
+  .product-section h2 {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 0 4px;
+  }
+  .product-card {
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  .product-card img {
+    height: 120px;
+    border-radius: 8px 8px 0 0;
+  }
+  .hero-btn {
+    padding: 10px 18px;
+    font-size: 0.98rem;
+    border-radius: 8px;
+    margin-right: 8px;
+  }
+}
+
 .hero-btn {
   background: #b46a36;
   color: #fff;

@@ -61,7 +61,7 @@ function LoginPage() {
     <div className="login-container">
       <div className="login-card">
         <div className="logo-section" onClick={handleBackToHome}>
-          <h1 className="brand-name">Craftique</h1>
+          <div className="logo-circle">C</div>
         </div>
 
         <h2 className="login-title">Đăng Nhập</h2>
