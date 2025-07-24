@@ -757,3 +757,37 @@
 .quick-actions-card .main-action-btn{
   background-color: rgba(221, 139, 45, 0.959);
 }
+
+@media (max-width: 600px) {
+  .order-detail-page {
+    padding: 6px;
+  }
+  .order-detail-header, .order-info-section, .order-details-section, .order-summary-section {
+    padding: 8px 4px;
+    border-radius: 8px;
+  }
+  .header-left h1 {
+    font-size: 1.1rem;
+  }
+  .order-info-section h2, .order-details-section h2, .order-summary-section h2 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .order-details-table {
+    font-size: 12px;
+    overflow-x: auto;
+  }
+  .order-details-table th, .order-details-table td {
+    padding: 4px 4px;
+    font-size: 11px;
+  }
+  .product-image, .no-image {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+  }
+  .summary-content {
+    max-width: 100%;
+    padding: 0;
+  }
+}

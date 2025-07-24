@@ -399,24 +399,104 @@
 
 @media (max-width: 480px) {
   .product-page {
-    padding: 6px 0;
+    padding: 2px 0;
   }
-  .product-controls {
-    padding: 8px 2px;
+  .page-header h1 {
+    font-size: 1.5rem;
   }
-  .product-sidebar {
-    padding: 10px 2px;
-    border-radius: 10px;
+  .page-header p {
+    font-size: 0.98rem;
   }
-  .products-grid {
+  .product-content {
     gap: 10px;
   }
+  .product-sidebar {
+    padding: 6px 0;
+    border-radius: 8px;
+    min-height: unset;
+    margin-top: 0;
+    margin-bottom: 8px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .category-list h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .category-item {
+    font-size: 0.95rem;
+    padding: 8px 0;
+    border-radius: 8px;
+  }
+  .product-controls {
+    flex-direction: column;
+    gap: 8px;
+    padding: 6px 2px;
+  }
+  .search-input, .sort-select {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 8px 8px;
+  }
+  .search-btn {
+    font-size: 1rem;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 0;
+  }
   .product-card {
-    min-height: 340px;
-    border-radius: 12px;
+    min-height: 220px;
+    border-radius: 8px;
   }
   .product-image {
-    height: 140px;
+    height: 100px;
+    border-radius: 8px 8px 0 0;
+  }
+  .product-image img {
+    border-radius: 8px 8px 0 0;
+  }
+  .product-info {
+    padding: 10px 8px 8px 8px;
+  }
+  .product-name {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .product-description {
+    font-size: 0.92rem;
+    min-height: 24px;
+    margin-bottom: 6px;
+  }
+  .product-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  .product-price {
+    font-size: 1.05rem;
+  }
+  .product-quantity {
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .add-to-cart-btn {
+    min-width: 100px;
+    max-width: 100%;
+    font-size: 0.98rem;
+    padding: 8px 0;
+    border-radius: 8px;
+  }
+  .loading, .error, .no-products {
+    padding: 30px 4px;
+    font-size: 1rem;
   }
 }
 

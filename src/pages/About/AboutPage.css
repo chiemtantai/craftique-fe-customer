@@ -160,3 +160,36 @@
     border-radius: 10px;
   }
 }
+
+@media (max-width: 600px) {
+  .about-header {
+    padding: 18px 0;
+  }
+  .about-header h1 {
+    font-size: 1.1rem;
+  }
+  .about-content {
+    padding: 0 6px;
+    margin-bottom: 24px;
+  }
+  .about-text {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+  }
+  .about-text p {
+    font-size: 0.95rem;
+  }
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .gallery-item {
+    height: 120px;
+    border-radius: 8px;
+  }
+  .gallery-item img {
+    height: 120px;
+    border-radius: 8px;
+  }
+}

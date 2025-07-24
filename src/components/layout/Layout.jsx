@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import accountService from '../../services/accountService'
 import AddToCart from '../features/products/AddToCart';
 import './Layout.css';
+import { FaBars } from 'react-icons/fa';
 
 function Layout({ children }) {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ function Layout({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [cartItemCount, setCartItemCount] = useState(0);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef(null);
@@ -177,6 +179,10 @@ function Layout({ children }) {
     navigate('/profile');
   };
 
+  const handleHamburgerClick = () => {
+    setShowMobileMenu(!showMobileMenu);
+  };
+
 
   return (
     <div className="container">
@@ -186,8 +192,10 @@ function Layout({ children }) {
     <div className="logo-circle">C</div>
     <span className="logo-text">Craftique</span>
   </div>
-
-  <div className="navbar-center">
+  <button className="hamburger" onClick={handleHamburgerClick} aria-label="Menu">
+    <FaBars />
+  </button>
+  <div className={`navbar-center${showMobileMenu ? ' show' : ''}`}>
   <button onClick={() => handleNavClick('/home')} className={isActiveNav('/home') || isActiveNav('/') ? 'nav-link active' : 'nav-link'}>
     Trang chủ
   </button>
