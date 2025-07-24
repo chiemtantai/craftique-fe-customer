@@ -18,7 +18,7 @@ function Hero() {
     <section style={{
       minHeight: isMobile ? 'auto' : '70vh',
       display: 'flex',
-      alignItems: isMobile ? 'flex-start' : 'center',
+      alignItems: 'center',
       background: 'linear-gradient(90deg, #fbeee6 0%, #e7b98b 100%)',
       padding: isMobile ? '12px 0' : undefined
     }}>
@@ -28,15 +28,16 @@ function Hero() {
         margin: '0 auto',
         padding: isMobile ? 10 : 40,
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: isMobile ? 'column' : 'row',
         gap: isMobile ? 18 : 60,
-        alignItems: isMobile ? 'center' : 'flex-start',
-        justifyContent: isMobile ? 'flex-start' : 'flex-start'
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
         {/* Left: Text + Button */}
         <div style={{
-          width: '100%',
-          maxWidth: isMobile ? 500 : 600,
+          flex: 1,
+          minWidth: isMobile ? '100%' : 350,
+          maxWidth: isMobile ? '100%' : 600,
           display: 'flex',
           flexDirection: 'column',
           alignItems: isMobile ? 'center' : 'flex-start',
@@ -143,34 +144,39 @@ function Hero() {
         </div>
         {/* Right: Cards */}
         <div style={{
-          width: '100%',
+          flex: 1,
+          minWidth: isMobile ? '100%' : 350,
+          maxWidth: isMobile ? '100%' : 650,
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',
           gap: isMobile ? 12 : 32,
           justifyContent: 'center',
-          alignItems: isMobile ? 'center' : 'flex-end',
+          alignItems: 'center',
           marginTop: isMobile ? 8 : 0
         }}>
           {/* Card Gốm thủ công */}
           <a href="/products" style={{
             textDecoration: 'none',
-            width: isMobile ? '100%' : 'auto',
+            width: isMobile ? '90%' : 'auto',
+            minWidth: isMobile ? 0 : 260,
+            maxWidth: isMobile ? 260 : 350,
             display: 'flex',
             marginBottom: isMobile ? 12 : 0,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignSelf: 'center'
           }}>
             <div style={{
               background: '#fff',
               borderRadius: 16,
-              padding: isMobile ? '18px 10px 14px 10px' : '40px 32px 32px 32px',
+              padding: isMobile ? '12px 6px 10px 6px' : '40px 32px 32px 32px',
               boxShadow: '0 8px 32px #0002',
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               minWidth: isMobile ? 0 : 260,
-              maxWidth: isMobile ? '100%' : 350,
-              height: isMobile ? 180 : 320,
+              maxWidth: isMobile ? 260 : 350,
+              height: isMobile ? 120 : 320,
               marginBottom: isMobile ? 0 : 40,
               transition: 'box-shadow 0.2s, transform 0.2s'
             }}
@@ -184,14 +190,14 @@ function Hero() {
             }}
             >
               <div style={{
-                width: isMobile ? 90 : 180,
-                height: isMobile ? 60 : 120,
+                width: isMobile ? 60 : 180,
+                height: isMobile ? 40 : 120,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: '#f8f8f8',
                 borderRadius: 10,
-                marginBottom: isMobile ? 12 : 32
+                marginBottom: isMobile ? 8 : 32
               }}>
                 <img
                   src="https://cdn.tgdd.vn/Files/2021/07/13/1366702/lysu1-1200x676.jpg"
@@ -204,30 +210,33 @@ function Hero() {
                   onError={e => { e.currentTarget.src = fallbackHandmade; }}
                 />
               </div>
-              <h3 style={{ fontWeight: 700, color: '#2d1a06', fontSize: isMobile ? 15 : 22, marginBottom: 8, textAlign: 'center' }}>Gốm thủ công</h3>
-              <p style={{ color: '#a07c5b', fontSize: isMobile ? 13 : 17, textAlign: 'center' }}>Sản phẩm độc đáo</p>
+              <h3 style={{ fontWeight: 700, color: '#2d1a06', fontSize: isMobile ? 14 : 22, marginBottom: 6, textAlign: 'center' }}>Gốm thủ công</h3>
+              <p style={{ color: '#a07c5b', fontSize: isMobile ? 12 : 17, textAlign: 'center' }}>Sản phẩm độc đáo</p>
             </div>
           </a>
           {/* Card Custom Design */}
           <a href="/custom-product" style={{
             textDecoration: 'none',
-            width: isMobile ? '100%' : 'auto',
+            width: isMobile ? '90%' : 'auto',
+            minWidth: isMobile ? 0 : 260,
+            maxWidth: isMobile ? 260 : 350,
             display: 'flex',
             marginBottom: isMobile ? 0 : 0,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignSelf: 'center'
           }}>
             <div style={{
               background: '#fff',
               borderRadius: 16,
-              padding: isMobile ? '18px 10px 14px 10px' : '40px 32px 32px 32px',
+              padding: isMobile ? '12px 6px 10px 6px' : '40px 32px 32px 32px',
               boxShadow: '0 8px 32px #0002',
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               minWidth: isMobile ? 0 : 260,
-              maxWidth: isMobile ? '100%' : 350,
-              height: isMobile ? 180 : 320,
+              maxWidth: isMobile ? 260 : 350,
+              height: isMobile ? 120 : 320,
               marginBottom: isMobile ? 0 : 0,
               transition: 'box-shadow 0.2s, transform 0.2s'
             }}
@@ -241,14 +250,14 @@ function Hero() {
             }}
             >
               <div style={{
-                width: isMobile ? 90 : 180,
-                height: isMobile ? 60 : 120,
+                width: isMobile ? 60 : 180,
+                height: isMobile ? 40 : 120,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: '#f8f8f8',
                 borderRadius: 10,
-                marginBottom: isMobile ? 12 : 32
+                marginBottom: isMobile ? 8 : 32
               }}>
                 <img
                   src="https://bizweb.dktcdn.net/100/438/408/products/ly-su-in-hinh-theo-yeu-cau-1.jpg?v=1684749648000"
@@ -261,8 +270,8 @@ function Hero() {
                   onError={e => { e.currentTarget.src = fallbackCustom; }}
                 />
               </div>
-              <h3 style={{ fontWeight: 700, color: '#2d1a06', fontSize: isMobile ? 15 : 22, marginBottom: 8, textAlign: 'center' }}>Custom Design</h3>
-              <p style={{ color: '#a07c5b', fontSize: isMobile ? 13 : 17, textAlign: 'center' }}>Thiết kế theo yêu cầu</p>
+              <h3 style={{ fontWeight: 700, color: '#2d1a06', fontSize: isMobile ? 14 : 22, marginBottom: 6, textAlign: 'center' }}>Custom Design</h3>
+              <p style={{ color: '#a07c5b', fontSize: isMobile ? 12 : 17, textAlign: 'center' }}>Thiết kế theo yêu cầu</p>
             </div>
           </a>
         </div>
