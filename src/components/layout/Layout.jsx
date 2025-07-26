@@ -209,11 +209,11 @@ function Layout({ children }) {
     Custom
   </button> */}
   <button onClick={() => handleNavClick('/custom-product')} className={isActiveNav('/custom-product') ? 'nav-link active' : 'nav-link'}>
-    Custom Product
+    Sản phẩm Custom
   </button>
-  <button onClick={() => handleNavClick('/workshop')} className={isActiveNav('/workshop') ? 'nav-link active' : 'nav-link'}>
+  {/* <button onClick={() => handleNavClick('/workshop')} className={isActiveNav('/workshop') ? 'nav-link active' : 'nav-link'}>
     Workshop
-  </button>
+  </button> */}
   <button onClick={() => handleNavClick('/blog')} className={isActiveNav('/blog') ? 'nav-link active' : 'nav-link'}>
     Chuyện của gốm
   </button>
