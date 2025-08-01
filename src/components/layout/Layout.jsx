@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import accountService from '../../services/accountService'
 import AddToCart from '../features/products/AddToCart';
+import Logo from '../ui/Logo';
 import './Layout.css';
 import { FaBars } from 'react-icons/fa';
 
@@ -188,9 +189,8 @@ function Layout({ children }) {
     <div className="container">
       {/* Header */}
       <nav className="navbar">
-  <div className="navbar-left" onClick={() => handleNavClick('/')}>
-    <div className="logo-circle">C</div>
-    <span className="logo-text">Craftique</span>
+  <div className="navbar-left">
+    <Logo variant="small" onClick={() => handleNavClick('/')} />
   </div>
   <button className="hamburger" onClick={handleHamburgerClick} aria-label="Menu">
     <FaBars />

@@ -1,0 +1,130 @@
+.favicon-demo {
+  margin: 30px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+}
+
+.favicon-demo h2 {
+  color: #8B4513;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.favicon-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.favicon-item {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+}
+
+.favicon-item h3 {
+  color: #8B4513;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.favicon-preview {
+  margin-bottom: 10px;
+}
+
+.favicon-preview img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.favicon-item p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.browser-tab-demo {
+  text-align: center;
+}
+
+.browser-tab-demo h3 {
+  color: #8B4513;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.browser-tab {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f3f4;
+  border-radius: 8px 8px 0 0;
+  padding: 8px 16px;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dadce0;
+}
+
+.tab-favicon img {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.tab-title {
+  color: #202124;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tab-close {
+  color: #5f6368;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.tab-close:hover {
+  background-color: #dadce0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .favicon-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .favicon-item {
+    min-width: 120px;
+  }
+  
+  .browser-tab {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+  
+  .tab-title {
+    font-size: 0.8rem;
+  }
+} 
