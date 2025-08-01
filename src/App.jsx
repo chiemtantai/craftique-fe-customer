@@ -17,6 +17,7 @@ import PurchaseOrder from './pages/PurchaseOrder/PurchaseOrderPage.jsx';
 import PaymentCallback from './components/features/payment/PaymentCallback.jsx';
 import CustomProductPage from './pages/CustomProduct/CustomProductPage.jsx';
 import CustomProductDetailPage from './pages/CustomProduct/CustomProductDetailPage.jsx';
+import LogoDemoPage from './pages/LogoDemo/LogoDemoPage.jsx';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/payment-callback" element={<Layout><PaymentCallback /></Layout>} />
         <Route path="/custom-product" element={<Layout><CustomProductPage /></Layout>} />
         <Route path="/custom-product/:id" element={<Layout><CustomProductDetailPage /></Layout>} />
+        <Route path="/logo-demo" element={<Layout><LogoDemoPage /></Layout>} />
         {/* Default route */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
       </Routes>

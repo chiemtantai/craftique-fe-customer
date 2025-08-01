@@ -1,0 +1,153 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  background-color: #8B4513;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+}
+
+.logo-container:hover {
+  background-color: #654321;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid #8B4513;
+}
+
+.logo-letter {
+  color: #8B4513;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-title {
+  color: #F5E6D3;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Montserrat', Arial, sans-serif;
+  line-height: 1.2;
+}
+
+.logo-subtitle {
+  color: #F5E6D3;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Montserrat', Arial, sans-serif;
+  line-height: 1.2;
+  opacity: 0.9;
+}
+
+/* Variant styles */
+.logo-container.small {
+  padding: 8px 14px;
+  gap: 10px;
+}
+
+.logo-container.small .logo-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.logo-container.small .logo-letter {
+  font-size: 20px;
+}
+
+.logo-container.small .logo-title {
+  font-size: 20px;
+}
+
+.logo-container.small .logo-subtitle {
+    font-size: 14px;
+}
+
+.logo-container.large {
+  padding: 12px 20px;
+  gap: 16px;
+}
+
+.logo-container.large .logo-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.logo-container.large .logo-letter {
+  font-size: 22px;
+}
+
+.logo-container.large .logo-title {
+  font-size: 18px;
+}
+
+.logo-container.large .logo-subtitle {
+  font-size: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .logo-container {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .logo-letter {
+    font-size: 16px;
+  }
+  
+  .logo-title {
+    font-size: 14px;
+  }
+  
+  .logo-subtitle {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-container {
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logo-letter {
+    font-size: 14px;
+  }
+  
+  .logo-title {
+    font-size: 12px;
+  }
+  
+  .logo-subtitle {
+    font-size: 10px;
+  }
+} 
