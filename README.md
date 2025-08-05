@@ -186,7 +186,7 @@ Dự án này được phân phối dưới giấy phép MIT. Xem file `LICENSE`
 
 ## 📞 Liên hệ
 
-- **Website**: [craftique.com](https://craftique.com)
+- **Website**: [craftique.com]([https://craftique.com](https://craftique-shop.vercel.app/))
 - **Email**: craftique68@gmail.com
 - **Phone**: 0987654321 / 0123456789
 - **Address**: Việt Nam
